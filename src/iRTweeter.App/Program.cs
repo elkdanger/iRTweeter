@@ -14,6 +14,7 @@ namespace iRTweeter.App
     {
         static IContainer components = new System.ComponentModel.Container();
         private static IConfig config;
+        private static NotifyIcon trayIcon;
 
         /// <summary>
         /// The main entry point for the application.
@@ -31,7 +32,7 @@ namespace iRTweeter.App
 
             if (config.RunSettingsOnStart)
             {
-                Process.Start(hostUri.ToString());
+                OpenSettings();
             }
 
             Application.Run();
@@ -42,22 +43,34 @@ namespace iRTweeter.App
         /// </summary>
         private static void BootstrapComponents()
         {
-            var trayIcon = new NotifyIcon(components);
-
+            trayIcon = new NotifyIcon(components);
             trayIcon.Icon = ((System.Drawing.Icon)(Properties.Resources.ResourceManager.GetObject("trayIcon")));
             trayIcon.Text = "iRTweeter";
             trayIcon.Visible = true;
 
             var contextMenu = new ContextMenu(new[] {
-                new MenuItem("Settings"),
+                new MenuItem("Settings", (sender, args) => OpenSettings()),
                 new MenuItem("-"),
-                new MenuItem("Exit", (sender, args) => {
-                    trayIcon.Visible = false;
-                    Application.Exit();
-                })
+                new MenuItem("Exit", (sender, args) => ExitApp())
             });
 
             trayIcon.ContextMenu = contextMenu;
+        }
+
+        /// <summary>
+        /// Opens the settings dashboard
+        /// </summary>
+        static void OpenSettings()
+        {
+            Process.Start(config.Server.GetHostUri().ToString());
+        }
+
+        /// <summary>
+        /// Closes the application
+        /// </summary>
+        static void ExitApp()
+        {
+            Application.Exit();
         }
     }
 
