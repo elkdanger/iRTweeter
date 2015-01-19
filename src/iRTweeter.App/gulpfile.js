@@ -1,4 +1,4 @@
-﻿/// <vs AfterBuild='bower' Clean='clean' />
+/// <vs AfterBuild='bower' SolutionOpened='www_watch' />
 var gulp = require('gulp');
 var bowerMain = require('main-bower-files');
 var filter = require('gulp-filter');
@@ -6,6 +6,7 @@ var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var watch = require('gulp-watch');
 
 gulp.task('bower', function () {
 
@@ -33,5 +34,13 @@ gulp.task('bower', function () {
     // Fonts
         .pipe(fontFilter)
         .pipe(gulp.dest('./www/fonts'));
+
+});
+
+gulp.task('www_watch', function () {
+
+    gulp.src('./www/*.html')
+        .pipe(watch('./www/*.html'))
+        .pipe(gulp.dest('./bin/Debug/www'));
 
 });
