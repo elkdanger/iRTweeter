@@ -3,10 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
 using iRTweeter.App.Config;
-using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.Hosting;
-using Microsoft.Owin.StaticFiles;
-using Owin;
 
 namespace iRTweeter.App
 {
@@ -71,31 +68,6 @@ namespace iRTweeter.App
         static void ExitApp()
         {
             Application.Exit();
-        }
-    }
-
-    public class Startup
-    {
-        public void Configuration(IAppBuilder app)
-        {
-            var fileSystem = new PhysicalFileSystem("www");
-
-            var fileServerOptions = new FileServerOptions
-            {
-                EnableDefaultFiles = true,
-                FileSystem = fileSystem,
-                StaticFileOptions =
-                {
-                    FileSystem = fileSystem,
-                    ServeUnknownFileTypes = false
-                },
-                DefaultFilesOptions =
-                {
-                    DefaultFileNames = new[] { "index.html" }
-                }
-            };
-
-            app.UseFileServer(fileServerOptions);
         }
     }
 }

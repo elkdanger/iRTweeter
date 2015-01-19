@@ -1,4 +1,4 @@
-﻿/// <vs AfterBuild='bower' />
+﻿/// <vs AfterBuild='bower' Clean='clean' />
 var gulp = require('gulp');
 var bowerMain = require('main-bower-files');
 var filter = require('gulp-filter');
@@ -33,15 +33,5 @@ gulp.task('bower', function () {
     // Fonts
         .pipe(fontFilter)
         .pipe(gulp.dest('./www/fonts'));
-
-});
-
-gulp.task('clean', function () {
-
-    var src = [
-    ];
-
-    return gulp.src(src, { read: false })
-        .pipe(clean());
 
 });
