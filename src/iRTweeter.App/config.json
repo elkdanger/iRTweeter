@@ -1,0 +1,6 @@
+﻿{
+    "runSettingsOnStart": true,
+    "server": { 
+        "port":  6061
+    }
+}
