@@ -39,8 +39,15 @@ gulp.task('bower', function () {
 
 gulp.task('www_watch', function () {
 
-    gulp.src('./www/*.html')
-        .pipe(watch('./www/*.html'))
+    watch('./www/**/*.html')
         .pipe(gulp.dest('./bin/Debug/www'));
+
+    watch([
+        './www/js/**/*.js',
+        '!./www/js/lib'
+    ])
+    .pipe(gulp.dest('./bin/Debug/www/js'));
+
+    //gulp.src('./www/js/**/*.js')
 
 });
