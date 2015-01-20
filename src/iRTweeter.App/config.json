@@ -1,5 +1,5 @@
 ﻿{
-    "runSettingsOnStart": true,
+    "openDashboardOnApplicationStart": true,
     "debugMode": true,
     "server": { 
         "port":  6061

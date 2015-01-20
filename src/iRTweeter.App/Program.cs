@@ -27,7 +27,7 @@ namespace iRTweeter.App
 
             WebApp.Start<Startup>(hostUri.ToString());
 
-            if (config.RunSettingsOnStart)
+            if (config.OpenDashboardOnApplicationStart)
             {
                 OpenSettings();
             }

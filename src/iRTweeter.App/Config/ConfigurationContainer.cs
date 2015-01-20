@@ -21,7 +21,12 @@ namespace iRTweeter.App.Config
         /// <summary>
         /// Gets or sets a value indicating whether the settings page should be opened once the server starts
         /// </summary>
-        public bool RunSettingsOnStart { get; set; }
+        public bool OpenDashboardOnApplicationStart { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the app is in debug mode or not
+        /// </summary>
+        public bool DebugMode { get; set; }
 
         /// <summary>
         /// Gets or sets the server settings
@@ -61,7 +66,8 @@ namespace iRTweeter.App.Config
 
     public interface IConfig
     {
-        bool RunSettingsOnStart { get; }
+        bool OpenDashboardOnApplicationStart { get; }
+        bool DebugMode { get; }
         IServerConfig Server { get; }
     }
 

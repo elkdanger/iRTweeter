@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Web.Http;
 using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 using Owin;
@@ -32,6 +33,16 @@ namespace iRTweeter.App
 
             app.UseFileServer(fileServerOptions);
             app.MapSignalR();
+
+            // Web api
+            var webApiConfig = new HttpConfiguration();
+
+            webApiConfig.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
+
+            app.UseWebApi(webApiConfig);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 (function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .service('SignalRService', function () {
 
             var proxy = null;
