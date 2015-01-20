@@ -1,11 +1,5 @@
 ﻿(function () {
 
-    var connectionState = ko.observable(false);
-
-    $.connection.hub.start().done(function () {
-        connectionState(true);
-    });
-
     var app = angular.module('irtweeter', ['ngRoute'])
         .config(function ($routeProvider) {
 
@@ -32,6 +26,11 @@
         }])
         .controller('SettingsController', ['$scope', function ($scope) {
 
+            settingsHub.server.getConfiguration()
+                .done(function (config) {
+                    console.log(config);
+                });    
+
             $scope.settings = {
                 port: 6060,
                 runOnWindowsStart: true,
@@ -47,13 +46,6 @@
 
         }])
         .controller('LayoutController', ['$scope', function ($scope) {
-
-            $scope.isConnected = connectionState();
-
-            connectionState.subscribe(function (value) {
-                $scope.isConnected = value;
-                $scope.$apply();
-            });
 
         }]);
 
