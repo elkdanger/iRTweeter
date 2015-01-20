@@ -1,7 +1,7 @@
 ﻿(function () {
 
     var app = angular.module('irtweeter', ['ngRoute'])
-        .config(function ($routeProvider) {
+        .config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider
                 .when('/', {
@@ -20,5 +20,5 @@
                     redirectTo: '/'
                 });
 
-        });
+        }]);
 })();

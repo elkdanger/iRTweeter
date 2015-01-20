@@ -1,4 +1,4 @@
-/// <vs AfterBuild='bower' />
+/// <vs AfterBuild='build' />
 var gulp = require('gulp');
 var bowerMain = require('main-bower-files');
 var filter = require('gulp-filter');
@@ -36,6 +36,25 @@ gulp.task('bower', function () {
         .pipe(gulp.dest('./www/fonts'));
 
 });
+
+gulp.task('scripts', function () {
+
+    return gulp.src([
+        './www/js/app.js',
+        './www/js/controllers/**/*.js',
+        './www/js/services/**/*.js'
+    ])
+    .pipe(concat('app-compiled.js'))
+    .pipe(gulp.dest('./www/js'))
+    .pipe(uglify())
+    .pipe(rename({
+        suffix: '.min'
+    }))
+    .pipe(gulp.dest('./www/js'));
+
+});
+
+gulp.task('build', ['bower', 'scripts']);
 
 gulp.task('www_watch', function () {
 
