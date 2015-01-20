@@ -9,7 +9,7 @@ namespace iRTweeter.App
 {
     static class Program
     {
-        static IContainer components = new System.ComponentModel.Container();
+        private static IContainer components = new System.ComponentModel.Container();
         private static IConfig config;
         private static NotifyIcon trayIcon;
 
