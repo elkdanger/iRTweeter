@@ -1,6 +1,8 @@
-﻿(function () {
+﻿(function (app) {
 
-    var app = angular.module('irtweeter', ['ngRoute'])
+    app.moduleName = "irtweeter";
+
+    angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider
@@ -21,4 +23,5 @@
                 });
 
         }]);
-})();
+
+})(window.App = window.App || {});

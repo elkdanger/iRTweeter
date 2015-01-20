@@ -1,6 +1,8 @@
-(function () {
+(function (app) {
 
-    var app = angular.module('irtweeter', ['ngRoute'])
+    app.moduleName = "irtweeter";
+
+    angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider
@@ -21,10 +23,11 @@
                 });
 
         }]);
-})();
+
+})(window.App = window.App || {});
 (function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .controller('AboutController', ['$scope', function ($scope) {
 
         }]);
@@ -40,7 +43,7 @@
 })();
 (function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .controller('HomeController', ['$scope', '$rootScope', function ($scope, $rootScope) {
 
         }])
@@ -49,7 +52,7 @@
 
 (function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .controller('SettingsController', ['$scope', function ($scope) {
 
             $scope.settings = {

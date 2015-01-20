@@ -45,12 +45,12 @@ gulp.task('scripts', function () {
         './www/js/services/**/*.js'
     ])
     .pipe(concat('app-compiled.js'))
-    .pipe(gulp.dest('./www/js'))
+    .pipe(gulp.dest('./www/js/lib'))
     .pipe(uglify())
     .pipe(rename({
         suffix: '.min'
     }))
-    .pipe(gulp.dest('./www/js'));
+    .pipe(gulp.dest('./www/js/lib'));
 
 });
 

@@ -1,6 +1,6 @@
 ﻿(function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .controller('HomeController', ['$scope', '$rootScope', function ($scope, $rootScope) {
 
         }])

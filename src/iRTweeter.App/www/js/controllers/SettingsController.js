@@ -1,7 +1,7 @@
 ﻿
 (function () {
 
-    angular.module('irtweeter')
+    angular.module(App.moduleName)
         .controller('SettingsController', ['$scope', function ($scope) {
 
             $scope.settings = {
