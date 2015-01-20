@@ -1,5 +1,11 @@
 ﻿(function () {
 
+    var connectionState = ko.observable(false);
+
+    $.connection.hub.start().done(function () {
+        connectionState(true);
+    });
+
     var app = angular.module('irtweeter', ['ngRoute'])
         .config(function ($routeProvider) {
 
@@ -38,6 +44,16 @@
 
         }])
         .controller('AboutController', ['$scope', function ($scope) {
+
+        }])
+        .controller('LayoutController', ['$scope', function ($scope) {
+
+            $scope.isConnected = connectionState();
+
+            connectionState.subscribe(function (value) {
+                $scope.isConnected = value;
+                $scope.$apply();
+            });
 
         }]);
 
