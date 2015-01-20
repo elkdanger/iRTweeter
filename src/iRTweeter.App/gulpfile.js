@@ -1,4 +1,4 @@
-/// <vs AfterBuild='bower' SolutionOpened='www_watch' />
+/// <vs AfterBuild='bower' />
 var gulp = require('gulp');
 var bowerMain = require('main-bower-files');
 var filter = require('gulp-filter');
@@ -47,7 +47,5 @@ gulp.task('www_watch', function () {
         '!./www/js/lib'
     ])
     .pipe(gulp.dest('./bin/Debug/www/js'));
-
-    //gulp.src('./www/js/**/*.js')
 
 });

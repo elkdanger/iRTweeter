@@ -15,8 +15,9 @@
         "tests"
     ],
     "dependencies": {
-        "bootstrap": "",
+        "bootstrap": "^3.3.2",
         "angular": "^1.3.9",
-        "angular-route": "^1.3.9"
+        "angular-route": "^1.3.9",
+        "signalr": "^2.2.0"
     }
 }

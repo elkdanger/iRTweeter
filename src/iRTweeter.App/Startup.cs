@@ -1,4 +1,6 @@
-﻿using Microsoft.Owin.FileSystems;
+﻿using System;
+using System.IO;
+using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 using Owin;
 
@@ -8,8 +10,11 @@ namespace iRTweeter.App
     {
         public void Configuration(IAppBuilder app)
         {
+#if DEBUG
+            var fileSystem = new PhysicalFileSystem(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../www"));
+#else
             var fileSystem = new PhysicalFileSystem("www");
-
+#endif
             var fileServerOptions = new FileServerOptions
             {
                 EnableDefaultFiles = true,
@@ -26,6 +31,7 @@ namespace iRTweeter.App
             };
 
             app.UseFileServer(fileServerOptions);
+            app.MapSignalR();
         }
     }
 }
