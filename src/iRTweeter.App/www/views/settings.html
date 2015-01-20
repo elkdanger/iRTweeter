@@ -1,2 +1,64 @@
 ﻿<h1 class="page-header">Settings</h1>
 
+<div class="row">
+
+    <div class="col-sm-6">
+
+        <section>
+
+            <h3>Twitter</h3>
+            <p>Authorise your Twitter account so that we may tweet on your behalf</p>
+            <a href="#" class="btn btn-primary">Authorise</a>
+
+        </section>
+
+    </div>
+
+    <div class="col-sm-6">
+
+        <section>
+
+            <h3>App settings</h3>
+
+            <form novalidate class="form-horizontal" name="settingsForm" ng-submit="save(settings)">
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="settings.runOnWindowsStart" />
+                                Run app when Windows logs in
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="settings.autoOpenDash" />
+                                Open the dashboard on startup
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="server_port" class="col-sm-2 control-label">Port</label>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control" placeholder="Port number" ng-model="settings.port" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default" ng-disabled="!settingsForm.$valid">Save</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</div>
