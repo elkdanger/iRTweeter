@@ -157,6 +157,7 @@
     <None Include="Resources\trayIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Hubs\" />
     <Folder Include="www\images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
