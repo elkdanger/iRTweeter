@@ -94,8 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\SettingsController.cs" />
-    <Compile Include="Config\ConfigurationContainer.cs" />
-    <Compile Include="Hubs\SettingsHub.cs" />
+    <Compile Include="Config\AppConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -110,7 +109,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="bower.json" />
-    <None Include="config.json">
+    <None Include="config.debug.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="package.json" />
@@ -181,6 +180,7 @@
     <None Include="Resources\trayIcon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Hubs\" />
     <Folder Include="www\images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

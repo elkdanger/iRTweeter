@@ -4,16 +4,45 @@ using Newtonsoft.Json;
 
 namespace iRTweeter.App.Config
 {
-    public class ConfigurationContainer : IConfig
+    public class AppConfiguration : IConfig
     {
+        private static AppConfiguration currentConfiuration;
+        private static object configLock = new object();
+
+#if DEBUG
+        private const string configFilename = "config.debug.json";
+#else
+        private const string configFilename = "config.json";
+#endif
+
+        public static IConfig Current
+        {
+            get
+            {
+                if(currentConfiuration == null)
+                {
+                    lock(configLock)
+                    {
+                        if(currentConfiuration == null)
+                        {
+                            currentConfiuration = Load();
+                        }
+                    }
+                }
+
+                return currentConfiuration;
+            }
+        }
+
+
         /// <summary>
         /// Loads the specified filename.
         /// </summary>
         /// <param name="filename">The filename.</param>
-        public static IConfig Load(string filename = "config.json")
+        private static AppConfiguration Load()
         {
-            var json = File.ReadAllText(filename);
-            var config = JsonConvert.DeserializeObject<ConfigurationContainer>(json);
+            var json = File.ReadAllText(configFilename);
+            var config = JsonConvert.DeserializeObject<AppConfiguration>(json);
 
             return config;
         }

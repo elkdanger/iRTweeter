@@ -10,7 +10,6 @@ namespace iRTweeter.App
     static class Program
     {
         private static IContainer components = new System.ComponentModel.Container();
-        private static IConfig config;
         private static NotifyIcon trayIcon;
 
         /// <summary>
@@ -21,13 +20,11 @@ namespace iRTweeter.App
         {
             BootstrapComponents();
 
-            config = ConfigurationContainer.Load();
-
-            var hostUri = config.Server.GetHostUri();
+            var hostUri = AppConfiguration.Current.Server.GetHostUri();
 
             WebApp.Start<Startup>(hostUri.ToString());
 
-            if (config.OpenDashboardOnApplicationStart)
+            if (AppConfiguration.Current.OpenDashboardOnApplicationStart)
             {
                 OpenSettings();
             }
@@ -59,7 +56,7 @@ namespace iRTweeter.App
         /// </summary>
         static void OpenSettings()
         {
-            Process.Start(config.Server.GetHostUri().ToString());
+            Process.Start(AppConfiguration.Current.Server.GetHostUri().ToString());
         }
 
         /// <summary>

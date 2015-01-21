@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
+﻿using System.Web.Http;
 using iRTweeter.App.Config;
 
 namespace iRTweeter.App.Api
@@ -12,7 +7,7 @@ namespace iRTweeter.App.Api
     {
         public IConfig Get()
         {
-            return ConfigurationContainer.Load();
+            return AppConfiguration.Current;
         }
     }
 }
