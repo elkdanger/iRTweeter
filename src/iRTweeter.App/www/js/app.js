@@ -25,3 +25,12 @@
         }]);
 
 })(window.App = window.App || {});
+
+$(function () {
+    // Other global, possibly non-angular stuff
+    $("body").on("click", "[external]", function (e) {
+        e.preventDefault();
+
+        window.open(this.href);
+    });
+});
