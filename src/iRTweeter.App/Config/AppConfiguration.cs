@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace iRTweeter.App.Config
 {
     public class AppConfiguration : IConfig
     {
-        private static AppConfiguration currentConfiuration;
+        private static IConfig currentConfiuration;
         private static object configLock = new object();
 
 #if DEBUG
@@ -32,19 +34,19 @@ namespace iRTweeter.App.Config
 
                 return currentConfiuration;
             }
-        }
 
-
-        /// <summary>
-        /// Loads the specified filename.
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        private static AppConfiguration Load()
-        {
-            var json = File.ReadAllText(configFilename);
-            var config = JsonConvert.DeserializeObject<AppConfiguration>(json);
-
-            return config;
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+                
+                lock(configLock)
+                {
+                    currentConfiuration = value;
+                }
+            }
         }
 
         /// <summary>
@@ -62,6 +64,38 @@ namespace iRTweeter.App.Config
         /// </summary>
         [JsonConverter(typeof(ConcreteTypeConverter<ServerConfig>))]
         public IServerConfig Server { get; set; }
+
+        /// <summary>
+        /// Loads the specified filename.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        private static IConfig Load()
+        {
+            var json = File.ReadAllText(configFilename);
+            var config = JsonConvert.DeserializeObject<AppConfiguration>(json);
+
+            return config;
+        }
+
+        /// <summary>
+        /// Sets the configuration.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        public static Task SetConfiguration(IConfig config)
+        {
+            return new TaskFactory().StartNew(() =>
+            {
+                Current = config;
+
+                var json = JsonConvert.SerializeObject(config, new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                        Formatting = Formatting.Indented
+                    });
+
+                File.WriteAllText(configFilename, json);
+            });
+        }
     }
 
     /// <summary>

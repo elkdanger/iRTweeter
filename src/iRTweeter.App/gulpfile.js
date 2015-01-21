@@ -1,4 +1,4 @@
-/// <vs AfterBuild='build' />
+/// <vs AfterBuild='build' SolutionOpened='www_watch' />
 var gulp = require('gulp');
 var bowerMain = require('main-bower-files');
 var filter = require('gulp-filter');
@@ -6,8 +6,13 @@ var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+var sass = require('gulp-sass');
 var watch = require('gulp-watch');
+var batch = require('gulp-batch');
 
+/**
+ * Bower copy
+ */
 gulp.task('bower', function () {
 
     var jsFilter = filter('*.js');
@@ -37,6 +42,22 @@ gulp.task('bower', function () {
 
 });
 
+/**
+ * Compiling SASS
+ */
+gulp.task('sass', function () {
+
+    return gulp.src([
+        './www/css/**/*.scss'
+    ])
+    .pipe(sass())
+    .pipe(gulp.dest('./www/css'));
+
+});
+
+/**
+ * Compiling/minifying scripts
+ */
 gulp.task('scripts', function () {
 
     return gulp.src([
@@ -54,17 +75,26 @@ gulp.task('scripts', function () {
 
 });
 
-gulp.task('build', ['bower', 'scripts']);
-
+/**
+ * Watch task for compiling scripts and sass
+ */
 gulp.task('www_watch', function () {
 
-    watch('./www/**/*.html')
-        .pipe(gulp.dest('./bin/Debug/www'));
+    
+    //   watch('./www/**/*.html')
+    //    .pipe(gulp.dest('./bin/Debug/www'));
 
-    watch([
-        './www/js/**/*.js',
-        '!./www/js/lib'
-    ])
-    .pipe(gulp.dest('./bin/Debug/www/js'));
+    //watch([
+    //    './www/js/**/*.js',
+    //    '!./www/js/lib'
+    //])
+    //.pipe(gulp.dest('./bin/Debug/www/js'));
+
+    watch('./www/css/**/*.scss', function() {
+        gulp.start('sass'); 
+    });
 
 });
+
+// Primary build task
+gulp.task('build', ['bower', 'scripts', 'sass']);
