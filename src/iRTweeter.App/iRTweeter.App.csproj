@@ -142,6 +142,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="gulpfile.js" />
+    <Content Include="Tasks\bower.js" />
+    <Content Include="Tasks\sass.js" />
+    <Content Include="Tasks\scripts.js" />
+    <Content Include="Tasks\watch.js" />
     <Content Include="www\css\bootstrap.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
