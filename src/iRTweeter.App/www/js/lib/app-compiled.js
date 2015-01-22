@@ -25,6 +25,15 @@
         }]);
 
 })(window.App = window.App || {});
+
+$(function () {
+    // Other global, possibly non-angular stuff
+    $("body").on("click", "[external]", function (e) {
+        e.preventDefault();
+
+        window.open(this.href);
+    });
+});
 (function () {
 
     angular.module(App.moduleName)
@@ -54,7 +63,9 @@
 
     angular.module(App.moduleName)
         .controller('SettingsController', ['$scope', '$http', function ($scope, $http) {
-    
+
+            $scope.saved = false;
+
             $http.get('/api/settings')
                 .success(function (result) {
 
@@ -63,7 +74,14 @@
                 });
 
             $scope.save = function (settings) {
-                console.log(settings);
+
+                $scope.saved = false;
+
+                $http.put("/api/settings", settings)
+                    .success(function () {
+                        $scope.saved = true;
+                        $scope.settingsForm.$setPristine();
+                    });
             };
 
         }]);
