@@ -7,4 +7,4 @@ var bower = require('./Tasks/bower');
 var scripts = require('./Tasks/scripts');
 
 // Primary build task
-gulp.task('build', ['bower', 'scripts', 'sass']);
+gulp.task('build', ['scripts', 'sass']);
