@@ -122,7 +122,6 @@
     <Compile Include="Api\ActionResults\ChallengeResult.cs" />
     <Compile Include="Api\AuthenticationController.cs" />
     <Compile Include="Authentication\AuthenticationHelper.cs" />
-    <Compile Include="Authentication\ParsedExternalAccessToken.cs" />
     <Compile Include="Api\SettingsController.cs" />
     <Compile Include="Authentication\ExternalLoginData.cs" />
     <Compile Include="Authentication\TwitterAuthProvider.cs" />
@@ -202,6 +201,7 @@
     <Content Include="www\js\lib\lib.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="www\js\services\AuthenticationService.js" />
     <Content Include="www\js\services\SignalRService.js" />
     <Content Include="www\views\about.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

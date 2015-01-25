@@ -18,6 +18,7 @@ using TweetSharp;
 
 namespace iRTweeter.App.Api
 {
+    [RoutePrefix("api/auth")]
     public class AuthenticationController : ApiController
     {
         /// <summary>
@@ -36,7 +37,7 @@ namespace iRTweeter.App.Api
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
         [AllowAnonymous]
-        [Route("api/auth/external")]
+        [Route("external")]
         public async Task<IHttpActionResult> GetExternalLogin(string error = null)
         {
             var redirectUrl = string.Empty;
@@ -70,31 +71,22 @@ namespace iRTweeter.App.Api
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
                 AuthenticationHelper.ClearTokenData();
+
                 return new ChallengeResult(provider, this);
             }
 
             AuthenticationHelper.SetTokenData(externalData);
 
+            var svc = AuthenticationHelper.CreateTwitterService();
+            Program.AuthenticatedTwitterUser = svc.VerifyCredentials(new VerifyCredentialsOptions());
+
             return this.Redirect(redirectUrl);
         }
 
-        /// <summary>
-        /// Verifies the external access token.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        private Task<ParsedExternalAccessToken> VerifyExternalAccessToken(ExternalLoginData data)
+        [Route("user")]
+        public TwitterUser GetTwitterUser()
         {
-            return new TaskFactory().StartNew(() =>
-            {
-                ParsedExternalAccessToken parsedToken = null;
-
-                var svc = new TwitterService(Startup.TwitterAuthOptions.ConsumerKey, Startup.TwitterAuthOptions.ConsumerSecret, data.ExternalAccessToken, data.ExternalAccessTokenSecret);
-
-                var options = new VerifyCredentialsOptions();
-                var result = svc.VerifyCredentials(options);
-
-                return parsedToken;
-            });
+            return Program.AuthenticatedTwitterUser;
         }
 
         /// <summary>

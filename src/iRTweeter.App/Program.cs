@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Net;
 using System.Windows.Forms;
+using iRTweeter.App.Authentication;
 using iRTweeter.App.Config;
 using Microsoft.Owin.Hosting;
+using TweetSharp;
 
 namespace iRTweeter.App
 {
@@ -11,6 +14,8 @@ namespace iRTweeter.App
     {
         private static IContainer components = new System.ComponentModel.Container();
         private static NotifyIcon trayIcon;
+
+        internal static TwitterUser AuthenticatedTwitterUser = null;
 
         /// <summary>
         /// The main entry point for the application.
@@ -27,6 +32,23 @@ namespace iRTweeter.App
             if (AppConfiguration.Current.OpenDashboardOnApplicationStart)
             {
                 OpenSettings();
+            }
+
+            var tokenData = AuthenticationHelper.LoadTokenData();
+
+            if(tokenData != null)
+            {
+                var service = AuthenticationHelper.CreateTwitterService();
+
+                try
+                {
+                    AuthenticatedTwitterUser = service.VerifyCredentials(new VerifyCredentialsOptions());
+                }
+                catch (WebException ex)
+                {
+                    AuthenticatedTwitterUser = null;
+                    AuthenticationHelper.ClearTokenData();
+                }
             }
 
             Application.Run();

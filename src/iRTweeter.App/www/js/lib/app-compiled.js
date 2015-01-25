@@ -2,6 +2,11 @@
 
     app.moduleName = "irtweeter";
 
+    $.get("/api/auth/user")
+        .then(function (data) {
+            console.log(data);
+        });
+
     angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
 
@@ -30,7 +35,6 @@ $(function () {
     // Other global, possibly non-angular stuff
     $("body").on("click", "[external]", function (e) {
         e.preventDefault();
-
         window.open(this.href);
     });
 });
@@ -45,7 +49,23 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HeaderController', ['$scope', function ($scope) {
+        .controller('HeaderController', ['$scope', 'AuthenticationService', function ($scope, auth) {
+
+            $scope.isConnected = false;
+
+            auth.init().success(function () {
+                
+                if (auth.user) {
+                    $scope.isConnected = true;
+
+                    $scope.authInfo = {
+                        username: auth.user.ScreenName,
+                        name: auth.user.Name,
+                        url: auth.user.Url,
+                        imageUrl: auth.user.ProfileImageUrl
+                    };
+                }
+            });
 
         }]);
 
@@ -62,15 +82,28 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'TwitterService', function ($scope, $http, twitter) {
+        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', function ($scope, $http, auth) {
 
             $scope.saved = false;
+            
+            function setAuthInfo(user) {
+                $scope.isConnectedToTwitter = auth.user != undefined;
+
+                if (auth.user) {
+                    $scope.authInfo = {
+                        username: auth.user.ScreenName,
+                        name: auth.user.Name,
+                        url: auth.user.Url,
+                        imageUrl: auth.user.ProfileImageUrl
+                    };
+                }
+            }
+
+            setAuthInfo(auth.user);
 
             $http.get('/api/settings')
                 .success(function (result) {
-
                     $scope.settings = result;
-
                 });
 
             $scope.save = function (settings) {
@@ -86,11 +119,51 @@ $(function () {
 
             $scope.twitterAuth = function () {
 
-                var redirectUrl = location.protocol + "//" + location.host + "#/";
-                var url = "http://localhost:6061/api/auth/external?redirect_uri=" + redirectUrl;
+                var redirectUrl = location.protocol + "//" + location.host + "#/settings";
+                var url = "/api/auth/external?redirect_uri=" + redirectUrl;
 
                 window.location = url;
             };
+
+            $scope.$on("socialConnected", function (user) {
+                console.log("Socially connected!");
+
+                setAuthInfo(user);
+            });
+
+        }]);
+
+})();
+
+(function () {
+
+    angular.module(App.moduleName)
+        .service('AuthenticationService', ['$http', '$rootScope', function ($http, $rootScope) {
+
+            var Svc = function () {
+            };
+
+            Svc.prototype = {
+
+                /**
+                 * Initialises the authentication service
+                 */
+                init: function () {
+
+                    var _this = this;
+
+                    return $http.get("/api/auth/user")
+                        .success(function (user) {
+                            _this.user = user;
+
+                            $rootScope.$broadcast("socialConnected", user);
+
+                        });
+                }
+
+            };
+
+            return new Svc();
 
         }]);
 
@@ -121,52 +194,3 @@ $(function () {
         });
 
 })();
-
-(function(app) {
-
-    angular.module(app.moduleName)
-        .service("TwitterService", ['$http', function ($http) {
-
-            return {
-
-                auth: function () {
-
-                    /*var url = 'https://api.twitter.com/oauth/request_token';
-                    var consumerSecret = 'TAui2aFdrP0dcCo2qiNKRIwmxCwCzKDYjU7hhJHzO71Paeclse';
-                    debugger;
-                    var signature = oauthSignature.generate('post', url, {}, consumerSecret);
-                    var timestamp = new Date().getTime();
-                    var id = uuid.v4();
-
-                    var data = {
-                        oauth_callback: "http://localhost:6060/twitter/callback",
-                        oauth_consumer_key: "O5EBZfmI2600bkMSj8lFENuGr",
-                        oauth_timestamp: timestamp,
-                        oauth_nonce: id,
-                        oauth_signature: signature,
-                        oauth_signature_method: "HMAC-SHA1",
-                        oauth_version: "1.0"
-                    };
-
-                    $http.post(url, data)
-                        .success(function (result, status) {
-                            debugger;
-                        })
-                        .error(function (data, status, headers) {
-                            debugger;
-                        });*/
-
-                    $http.post('/api/twitter/token')
-                        .success(function (result) {
-
-                            debugger;
-
-                        });
-
-                }
-
-            };
-
-        }]);
-
-})(window.App = window.App || {})

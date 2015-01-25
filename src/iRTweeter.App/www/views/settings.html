@@ -4,12 +4,15 @@
 
     <div class="col-sm-6">
 
-        <section>
+        <h3>Twitter</h3>
 
-            <h3>Twitter</h3>
+        <section ng-show="!isConnectedToTwitter">
             <p>Authorise your Twitter account so that we may tweet on your behalf</p>
             <button class="btn btn-primary" ng-click="twitterAuth()">Authorise</button>
+        </section>
 
+        <section ng-show="isConnectedToTwitter">
+            <p>Connected as {{ authInfo.name }} (@{{ authInfo.username }})</p>
         </section>
 
     </div>

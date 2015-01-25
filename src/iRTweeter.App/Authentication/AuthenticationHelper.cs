@@ -8,7 +8,10 @@ namespace iRTweeter.App.Authentication
     {
         private const string TOKEN_FILE = ".token";
 
-        public static ExternalLoginData TokenData = null;
+        /// <summary>
+        /// Gets the token data.
+        /// </summary>
+        public static ExternalLoginData TokenData { get; private set; }
 
         /// <summary>
         /// Creates the twitter service.
@@ -47,6 +50,9 @@ namespace iRTweeter.App.Authentication
         /// </summary>
         public static ExternalLoginData LoadTokenData()
         {
+            if (TokenData != null)
+                return TokenData;
+
             if (!File.Exists(TOKEN_FILE))
                 return null;
 

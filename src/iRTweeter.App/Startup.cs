@@ -67,8 +67,6 @@ namespace iRTweeter.App
                 defaults: new { id = RouteParameter.Optional });
 
             app.UseWebApi(webApiConfig);
-
-            AuthenticationHelper.LoadTokenData();
         }
     }
 }

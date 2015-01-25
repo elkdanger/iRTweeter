@@ -2,6 +2,11 @@
 
     app.moduleName = "irtweeter";
 
+    $.get("/api/auth/user")
+        .then(function (data) {
+            console.log(data);
+        });
+
     angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
 
@@ -30,7 +35,6 @@ $(function () {
     // Other global, possibly non-angular stuff
     $("body").on("click", "[external]", function (e) {
         e.preventDefault();
-
         window.open(this.href);
     });
 });

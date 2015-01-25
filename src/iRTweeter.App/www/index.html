@@ -16,6 +16,7 @@
     <script src="js/controllers/HomeController.js"></script>
     <script src="js/controllers/HeaderController.js"></script>
     <script src="js/controllers/AboutController.js"></script>
+    <script src="js/services/AuthenticationService.js"></script>
 
     <!--<script src="js/services/SignalRService.js"></script>-->
     <!--<script src="js/lib/app-compiled.js"></script>-->
@@ -44,7 +45,14 @@
                         <li><a href="#/about">About</a></li>
                     </ul>
 
-                    <p class="navbar-text pull-right" ng-show="isConnected"><i class="glyphicon glyphicon-flash" title="App services are connected"></i></p>
+                    <p class="navbar-text pull-right" ng-show="isConnected">
+
+                        <img ng-src="{{ authInfo.imageUrl }}" class="navbar-header-image" />
+                        Connected as @{{ authInfo.username }}
+
+                        <i class="glyphicon glyphicon-flash" title="App services are connected"></i>
+                    </p>
+
                 </div>
             </div>
         </nav>
