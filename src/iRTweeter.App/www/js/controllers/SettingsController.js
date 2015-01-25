@@ -2,7 +2,7 @@
 (function () {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', function ($scope, $http) {
+        .controller('SettingsController', ['$scope', '$http', 'TwitterService', function ($scope, $http, twitter) {
 
             $scope.saved = false;
 
@@ -22,6 +22,14 @@
                         $scope.saved = true;
                         $scope.settingsForm.$setPristine();
                     });
+            };
+
+            $scope.twitterAuth = function () {
+
+                var redirectUrl = location.protocol + "//" + location.host + "#/";
+                var url = "http://localhost:6061/api/auth/external?redirect_uri=" + redirectUrl;
+
+                window.location = url;
             };
 
         }]);
