@@ -2,7 +2,7 @@
 (function () {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'TwitterService', function ($scope, $http, twitter) {
+        .controller('SettingsController', ['$scope', '$http', function ($scope, $http) {
 
             $scope.saved = false;
 
@@ -26,8 +26,8 @@
 
             $scope.twitterAuth = function () {
 
-                var redirectUrl = location.protocol + "//" + location.host + "#/";
-                var url = "http://localhost:6061/api/auth/external?redirect_uri=" + redirectUrl;
+                var redirectUrl = location.protocol + "//" + location.host + "#/settings";
+                var url = "/api/auth/external?redirect_uri=" + redirectUrl;
 
                 window.location = url;
             };
