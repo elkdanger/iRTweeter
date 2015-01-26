@@ -15,8 +15,6 @@ namespace iRTweeter.App
         private static IContainer components = new System.ComponentModel.Container();
         private static NotifyIcon trayIcon;
 
-        internal static TwitterUser AuthenticatedTwitterUser = null;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -34,22 +32,7 @@ namespace iRTweeter.App
                 OpenSettings();
             }
 
-            var tokenData = AuthenticationHelper.LoadTokenData();
-
-            if(tokenData != null)
-            {
-                var service = AuthenticationHelper.CreateTwitterService();
-
-                try
-                {
-                    AuthenticatedTwitterUser = service.VerifyCredentials(new VerifyCredentialsOptions());
-                }
-                catch (WebException ex)
-                {
-                    AuthenticatedTwitterUser = null;
-                    AuthenticationHelper.ClearTokenData();
-                }
-            }
+            AuthenticationHelper.SignIn();
 
             Application.Run();
         }

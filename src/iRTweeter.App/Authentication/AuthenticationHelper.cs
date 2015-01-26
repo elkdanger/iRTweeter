@@ -1,76 +1,65 @@
-﻿using System.IO;
-using Newtonsoft.Json;
+﻿using System.Net;
 using TweetSharp;
 
 namespace iRTweeter.App.Authentication
 {
     class AuthenticationHelper
     {
-        private const string TOKEN_FILE = ".token";
+        private static ExternalTokenData tokenData = null;
+
+        public static TwitterUser AuthenticatedTwitterUser { get; private set; }
 
         /// <summary>
         /// Gets the token data.
         /// </summary>
-        public static ExternalLoginData TokenData { get; private set; }
+        public static ExternalTokenData TokenData
+        {
+            get
+            {
+                tokenData = tokenData ?? ExternalTokenData.LoadTokenData();
+                return tokenData;
+            }
+        }
 
         /// <summary>
         /// Creates the twitter service.
         /// </summary>
         public static TwitterService CreateTwitterService()
         {
-            var tokenData = LoadTokenData();
-
-            if (tokenData == null)
+            if (TokenData == null)
                 return null;
 
-            return new TwitterService(Startup.TwitterAuthOptions.ConsumerKey, Startup.TwitterAuthOptions.ConsumerSecret, tokenData.ExternalAccessToken, tokenData.ExternalAccessTokenSecret);
+            return new TwitterService(Startup.TwitterAuthOptions.ConsumerKey, Startup.TwitterAuthOptions.ConsumerSecret, TokenData.ExternalAccessToken, TokenData.ExternalAccessTokenSecret);
         }
 
         /// <summary>
-        /// Saves the token data.
+        /// Signs the user in.
         /// </summary>
-        public static void SetTokenData(ExternalLoginData data)
-        {
-            if(data == null)
-            {
-                ClearTokenData();
-                TokenData = null;
-
-                return;
-            }
-
-            var json = JsonConvert.SerializeObject(data);
-            File.WriteAllText(TOKEN_FILE, json);
-
-            TokenData = data;
-        }
-
-        /// <summary>
-        /// Loads the token data.
-        /// </summary>
-        public static ExternalLoginData LoadTokenData()
+        public static void SignIn()
         {
             if (TokenData != null)
-                return TokenData;
+            {
+                var service = AuthenticationHelper.CreateTwitterService();
 
-            if (!File.Exists(TOKEN_FILE))
-                return null;
-
-            var json = File.ReadAllText(TOKEN_FILE);
-            var data = JsonConvert.DeserializeObject<ExternalLoginData>(json);
-
-            TokenData = data;
-
-            return data;
+                try
+                {
+                    AuthenticatedTwitterUser = service.VerifyCredentials(new VerifyCredentialsOptions());
+                }
+                catch (WebException)
+                {
+                    SignOut();
+                }
+            }
         }
 
         /// <summary>
-        /// Clears the token data.
+        /// Signs the out.
         /// </summary>
-        public static void ClearTokenData()
+        public static void SignOut()
         {
-            if (File.Exists(TOKEN_FILE))
-                File.Delete(TOKEN_FILE);
+            tokenData = null;
+            AuthenticatedTwitterUser = null;
+            ExternalTokenData.ClearTokenData();
         }
     }
 }

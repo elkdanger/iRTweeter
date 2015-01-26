@@ -123,9 +123,10 @@
     <Compile Include="Api\AuthenticationController.cs" />
     <Compile Include="Authentication\AuthenticationHelper.cs" />
     <Compile Include="Api\SettingsController.cs" />
-    <Compile Include="Authentication\ExternalLoginData.cs" />
+    <Compile Include="Authentication\ExternalTokenData.cs" />
     <Compile Include="Authentication\TwitterAuthProvider.cs" />
     <Compile Include="Config\AppConfiguration.cs" />
+    <Compile Include="Hubs\AppHub.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -218,7 +219,6 @@
     <None Include="Resources\trayIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Hubs\" />
     <Folder Include="www\images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -60,25 +60,22 @@ namespace iRTweeter.App.Api
                 return this.BadRequest(redirectUriValidationResult);
             }
 
-            var externalData = ExternalLoginData.FromIdentity(this.User.Identity as ClaimsIdentity);
+            var tokenData = ExternalTokenData.FromIdentity(this.User.Identity as ClaimsIdentity);
 
-            if(externalData == null)
+            if(tokenData == null)
             {
                 return this.InternalServerError();
             }
 
-            if (externalData.LoginProvider != provider)
+            if (tokenData.LoginProvider != provider)
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                AuthenticationHelper.ClearTokenData();
+                AuthenticationHelper.SignOut();
 
                 return new ChallengeResult(provider, this);
             }
 
-            AuthenticationHelper.SetTokenData(externalData);
-
-            var svc = AuthenticationHelper.CreateTwitterService();
-            Program.AuthenticatedTwitterUser = svc.VerifyCredentials(new VerifyCredentialsOptions());
+            ExternalTokenData.Write(tokenData);
 
             return this.Redirect(redirectUrl);
         }
@@ -86,7 +83,7 @@ namespace iRTweeter.App.Api
         [Route("user")]
         public TwitterUser GetTwitterUser()
         {
-            return Program.AuthenticatedTwitterUser;
+            return AuthenticationHelper.AuthenticatedTwitterUser;
         }
 
         /// <summary>
