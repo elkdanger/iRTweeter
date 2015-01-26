@@ -7,7 +7,9 @@
             $scope.simConnected = false;
 
             auth.getUser().then(function (user) {
-                $scope.user = user;
+                if (user) {
+                    $scope.user = user;
+                }
             });
 
         }])

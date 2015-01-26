@@ -45,12 +45,18 @@
                         <li><a href="#/about">About</a></li>
                     </ul>
 
-                    <p class="navbar-text pull-right">
+                    <p class="navbar-text pull-right" >
 
-                        <img ng-src="{{ authInfo.imageUrl }}" class="navbar-header-image" />
-                        Connected as @{{ authInfo.username }}
+                        <span ng-show="isConnected">
+                            <img ng-src="{{ authInfo.imageUrl }}" class="navbar-header-image" />
+                            Connected as @{{ authInfo.username }}
 
-                        <i class="glyphicon glyphicon-flash" ng-show="isConnected" title="App services are connected"></i>
+                            <i class="glyphicon glyphicon-flash" title="App services are connected"></i>
+                        </span>
+
+                        <span ng-show="!isConnected">
+                            Not connected to Twitter
+                        </span>
                     </p>
 
                 </div>

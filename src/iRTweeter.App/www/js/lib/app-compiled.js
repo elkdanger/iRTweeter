@@ -27,7 +27,12 @@
                     redirectTo: '/'
                 });
 
-        }]);
+        }])
+        .directive('spinner', function() {
+            return {
+                templateUrl: '/directives/spinner.html'
+            };
+        });
 
 })(window.App = window.App || {});
 
@@ -53,14 +58,19 @@ $(function () {
 
             $scope.isConnected = false;
 
-            auth.getUser().done(function (user) {
-                debugger;
-                $scope.authInfo = {
-                    username: user.ScreenName,
-                    name: user.Name,
-                    url: user.Url,
-                    imageUrl: user.ProfileImageUrl
-                };
+            auth.getUser().then(function (user) {
+
+                if (user) {
+
+                    $scope.isConnected = true;
+
+                    $scope.authInfo = {
+                        username: user.ScreenName,
+                        name: user.Name,
+                        url: user.Url,
+                        imageUrl: user.ProfileImageUrl
+                    };
+                }
             });
 
         }]);
@@ -69,10 +79,15 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HomeController', ['$scope',  function ($scope) {
+        .controller('HomeController', ['$scope', 'AuthenticationService',  function ($scope, auth) {
 
-            $scope.$on('socialConnected', function (user) {
-                console.log("Socially connected");
+            $scope.user = null;
+            $scope.simConnected = false;
+
+            auth.getUser().then(function (user) {
+                if (user) {
+                    $scope.user = user;
+                }
             });
 
         }])
@@ -163,7 +178,7 @@ $(function () {
                 },
 
                 getUser: function () {
-                    debugger;
+                    
                     var _this = this;
                     var deferred = $q.defer();
 
