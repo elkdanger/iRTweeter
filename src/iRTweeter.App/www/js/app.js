@@ -27,7 +27,12 @@
                     redirectTo: '/'
                 });
 
-        }]);
+        }])
+        .directive('spinner', function() {
+            return {
+                templateUrl: '/directives/spinner.html'
+            };
+        });
 
 })(window.App = window.App || {});
 

@@ -5,18 +5,13 @@
 
             $scope.isConnected = false;
 
-            auth.init().success(function () {
-                
-                if (auth.user) {
-                    $scope.isConnected = true;
-
-                    $scope.authInfo = {
-                        username: auth.user.ScreenName,
-                        name: auth.user.Name,
-                        url: auth.user.Url,
-                        imageUrl: auth.user.ProfileImageUrl
-                    };
-                }
+            auth.getUser().then(function (user) {
+                $scope.authInfo = {
+                    username: user.ScreenName,
+                    name: user.Name,
+                    url: user.Url,
+                    imageUrl: user.ProfileImageUrl
+                };
             });
 
         }]);

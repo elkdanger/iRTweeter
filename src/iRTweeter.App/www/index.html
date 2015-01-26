@@ -45,12 +45,12 @@
                         <li><a href="#/about">About</a></li>
                     </ul>
 
-                    <p class="navbar-text pull-right" ng-show="isConnected">
+                    <p class="navbar-text pull-right">
 
                         <img ng-src="{{ authInfo.imageUrl }}" class="navbar-header-image" />
                         Connected as @{{ authInfo.username }}
 
-                        <i class="glyphicon glyphicon-flash" title="App services are connected"></i>
+                        <i class="glyphicon glyphicon-flash" ng-show="isConnected" title="App services are connected"></i>
                     </p>
 
                 </div>

@@ -1,7 +1,18 @@
 ﻿
 <div class="jumbotron">
-    <h1>Welcome to iRTweeter</h1>
-    <p>This is the dashboard for the iRacing Tweet program. Enjoy!</p>
 
-    <a href="#/settings" class="btn btn-primary btn-lg">Configure</a>
+    <h1>Welcome to iRTweeter</h1>
+
+    <div ng-show="!user">
+        <p>This is the dashboard for the iRacing Tweet program. Enjoy!</p>
+        <a href="#/settings" class="btn btn-primary btn-lg">Configure</a>
+    </div>
+
+    <div ng-show="!simConnected">
+        <p>Connect your iRacing sim now to start logging Tweets!</p>
+
+        <spinner title="Waiting for iRacing.."></spinner>
+
+    </div>
+
 </div>

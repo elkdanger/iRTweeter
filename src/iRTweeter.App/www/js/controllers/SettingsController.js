@@ -46,8 +46,6 @@
             };
 
             $scope.$on("socialConnected", function (user) {
-                console.log("Socially connected!");
-
                 setAuthInfo(user);
             });
 

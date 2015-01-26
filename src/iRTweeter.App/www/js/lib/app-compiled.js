@@ -53,18 +53,14 @@ $(function () {
 
             $scope.isConnected = false;
 
-            auth.init().success(function () {
-                
-                if (auth.user) {
-                    $scope.isConnected = true;
-
-                    $scope.authInfo = {
-                        username: auth.user.ScreenName,
-                        name: auth.user.Name,
-                        url: auth.user.Url,
-                        imageUrl: auth.user.ProfileImageUrl
-                    };
-                }
+            auth.getUser().done(function (user) {
+                debugger;
+                $scope.authInfo = {
+                    username: user.ScreenName,
+                    name: user.Name,
+                    url: user.Url,
+                    imageUrl: user.ProfileImageUrl
+                };
             });
 
         }]);
@@ -73,7 +69,11 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HomeController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+        .controller('HomeController', ['$scope',  function ($scope) {
+
+            $scope.$on('socialConnected', function (user) {
+                console.log("Socially connected");
+            });
 
         }])
 
@@ -126,8 +126,6 @@ $(function () {
             };
 
             $scope.$on("socialConnected", function (user) {
-                console.log("Socially connected!");
-
                 setAuthInfo(user);
             });
 
@@ -138,9 +136,12 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .service('AuthenticationService', ['$http', '$rootScope', function ($http, $rootScope) {
+        .service('AuthenticationService', ['$http', '$rootScope', '$q', function ($http, $rootScope, $q) {
 
             var Svc = function () {
+
+                this.user = null;
+
             };
 
             Svc.prototype = {
@@ -154,19 +155,36 @@ $(function () {
 
                     return $http.get("/api/auth/user")
                         .success(function (user) {
-                            _this.user = user;
 
+                            _this.user = user;
                             $rootScope.$broadcast("socialConnected", user);
 
                         });
+                },
+
+                getUser: function () {
+                    debugger;
+                    var _this = this;
+                    var deferred = $q.defer();
+
+                    if (this.user != null) {
+                        deferred.resolve(this.user);
+                    }
+                    else {
+                        this.init().success(function (result) {
+                            deferred.resolve(result);
+                        }).error(function () {
+                            deferred.reject();
+                        });
+                    }
+
+                    return deferred.promise;
                 }
 
             };
 
             return new Svc();
-
         }]);
-
 })();
 
 (function () {
