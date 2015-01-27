@@ -1,8 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using iRTweeter.App.Hubs;
+using Microsoft.AspNet.SignalR;
 using TweetSharp;
 
 namespace iRTweeter.App.Authentication
 {
+    using LazyHub = Lazy<IHubContext>;
+
     class AuthenticationHelper
     {
         private static ExternalTokenData tokenData = null;
@@ -20,6 +25,8 @@ namespace iRTweeter.App.Authentication
                 return tokenData;
             }
         }
+
+        protected static LazyHub AuthenticationHub = new LazyHub(() => GlobalHost.ConnectionManager.GetHubContext<AuthenticationHub>());
 
         /// <summary>
         /// Creates the twitter service.
@@ -44,6 +51,7 @@ namespace iRTweeter.App.Authentication
                 try
                 {
                     AuthenticatedTwitterUser = service.VerifyCredentials(new VerifyCredentialsOptions());
+                    AuthenticationHub.Value.Clients.All.SignIn(AuthenticatedTwitterUser);
                 }
                 catch (WebException)
                 {
@@ -60,6 +68,9 @@ namespace iRTweeter.App.Authentication
             tokenData = null;
             AuthenticatedTwitterUser = null;
             ExternalTokenData.ClearTokenData();
+
+            // Let clients know that someone has signed out
+            AuthenticationHub.Value.Clients.All.SignOut();
         }
     }
 }

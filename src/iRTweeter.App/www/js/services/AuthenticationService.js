@@ -21,11 +21,13 @@
 
                     return $http.get("/api/auth/user")
                         .success(function (user) {
-
                             _this.user = user;
                             $rootScope.$broadcast("socialConnected", user);
-
                         });
+                },
+
+                signOut: function() {
+                    return $http.put("/api/auth/signOut");
                 },
 
                 getUser: function () {

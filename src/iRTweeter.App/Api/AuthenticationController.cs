@@ -81,6 +81,13 @@ namespace iRTweeter.App.Api
             return this.Redirect(redirectUrl);
         }
 
+        [Route("signOut")]
+        [HttpPut]
+        public void SignOut()
+        {
+            AuthenticationHelper.SignOut();
+        }
+
         [Route("user")]
         public TwitterUser GetTwitterUser()
         {

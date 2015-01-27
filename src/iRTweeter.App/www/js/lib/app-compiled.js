@@ -6,10 +6,6 @@
     app.connection = $.connection.hub.start();
     app.AppServices = $.connection.appHub;
 
-    app.AppServices.client.signOut = function () {
-        debugger;
-    };
-
     angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
 
@@ -56,28 +52,31 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HeaderController', ['$scope', 'AuthenticationService', 'AppService', function ($scope, auth, appSvc) {
+        .controller('HeaderController', ['$scope', 'SignalRProxy', 'AuthenticationService', function ($scope, SignalRProxy, authSvc) {
 
             $scope.isConnected = false;
 
-            App.connection.done(function () {
-                App.AppServices.server.getAuthenticatedUser().done(function (user) {
-
-                    $scope.$apply(function () {
-
-                        if (user) {
-                            $scope.isConnected = true;
-
-                            $scope.authInfo = {
-                                username: user.ScreenName,
-                                name: user.Name,
-                                url: user.Url,
-                                imageUrl: user.ProfileImageUrl
-                            };
-                        }
-                    });
+            var proxy = new SignalRProxy('authenticationHub', {}, function () {
+                
+                proxy.on('SignOut', function () {
+                    $isConnected = false;
+                    $scope.authInfo = null;
                 });
             });
+
+            authSvc.getUser().then(displayUserInfo);
+
+            function displayUserInfo(user) {
+                if (user) {
+                    $isConnected = true;
+
+                    $scope.authInfo = {
+                        username: user.ScreenName,
+                        imageUrl: user.ProfileImageUrl
+                    };
+                }
+            }
+
         }]);
 })();
 (function () {
@@ -98,36 +97,46 @@ $(function () {
 
 })();
 
-(function () {
+(function (app) {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', 'AppService', function ($scope, $http, auth, appSvc) {
+        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', function ($scope, $http, auth) {
 
             $scope.saved = false;
 
-            App.connection.done(function () {
-                App.AppServices.server.getAuthenticatedUser().done(function (user) {
+            //app.connection.done(function () {
+            //    app.AppServices.server.getAuthenticatedUser().done(function (user) {
 
-                    $scope.$apply(function () {
-                        $scope.isConnectedToTwitter = user != undefined;
+            //        $scope.$apply(function () {
+            //            $scope.isConnectedToTwitter = user != undefined;
 
-                        if (user) {
-                            $scope.authInfo = {
-                                username: user.ScreenName,
-                                name: user.Name,
-                                url: user.Url,
-                                imageUrl: user.ProfileImageUrl
-                            };
-                        }
-                    });
+            //            if (user) {
+            //                $scope.authInfo = {
+            //                    username: user.ScreenName,
+            //                    name: user.Name,
+            //                    url: user.Url,
+            //                    imageUrl: user.ProfileImageUrl
+            //                };
+            //            }
+            //        });
 
-                });
+            //    });
+            //});
+
+            auth.getUser().then(function (user) {
+
+                $scope.isConnectedToTwitter = user != undefined;
+
+                if (user) {
+                    $scope.authInfo = {
+                        username: user.ScreenName,
+                        name: user.Name,
+                        url: user.Url,
+                        imageUrl: user.ProfileImageUrl
+                    };
+                }
+
             });
-
-            App.AppServices.client.signOut = function () {
-                debugger;
-                console.log("Signed out");
-            };
 
             $http.get('/api/settings')
                 .success(function (result) {
@@ -146,7 +155,13 @@ $(function () {
             };
 
             $scope.signOut = function () {
-                App.AppServices.server.signOut();
+
+                auth.signOut().success(function () {
+                    debugger;
+                    $scope.isConnectedToTwitter = false;
+                    $scope.authInfo = null;
+                });
+
             }
 
             $scope.twitterAuth = function () {
@@ -155,38 +170,6 @@ $(function () {
                 var url = "/api/auth/external?redirect_uri=" + redirectUrl;
 
                 window.location = url;
-            };
-
-        }]);
-
-})();
-
-(function () {
-
-    angular.module(App.moduleName)
-        .service('AppService', ['$rootScope', '$q', function ($rootScope, $q) {
-
-            var proxy = null;
-
-            return {
-                connect: function () {
-
-                    var _this = this;
-
-                    connection = $.hubConnection();
-
-                    this.proxy = connection.createHubProxy('appHub');
-
-                    return connection.start()
-                        .done(function () {
-                            $rootScope.connected = true;
-                            console.log(_this.proxy);
-                        });
-                },
-
-                getAuthenticatedUser: function () {
-                    return this.proxy.invoke('getAuthenticatedUser');
-                }
             };
 
         }]);
@@ -215,11 +198,13 @@ $(function () {
 
                     return $http.get("/api/auth/user")
                         .success(function (user) {
-
                             _this.user = user;
                             $rootScope.$broadcast("socialConnected", user);
-
                         });
+                },
+
+                signOut: function() {
+                    return $http.put("/api/auth/signOut");
                 },
 
                 getUser: function () {
@@ -246,3 +231,62 @@ $(function () {
             return new Svc();
         }]);
 })();
+(function (app) {
+    'use strict';
+
+    angular.module(app.moduleName)
+        .factory('SignalRProxy', ['$rootScope', function ($rootScope) {
+
+            function SignalRProxyFactory(hubName, startOptions, doneCallback) {
+
+                var connection = $.hubConnection();
+                var proxy = connection.createHubProxy(hubName);
+
+                // Dummy event to get things working
+                proxy.on('tmp', function () { });
+
+                connection.start().done(doneCallback);
+
+                return {
+                    connection: connection,
+
+                    on: function (eventName, callback) {
+                        proxy.on(eventName, function (result) {
+                            $rootScope.$apply(function () {
+                                if (callback)
+                                    callback(result);
+                            });
+                        });
+
+                        return this;
+                    },
+
+                    off: function (eventName, callback) {
+                        proxy.off(eventName, function (result) {
+                            $rootScope.$apply(function () {
+                                if (callback)
+                                    callback(result);
+                            });
+                        });
+
+                        return this;
+                    },
+
+                    invoke: function (methodName, callback) {
+                        proxy.invoke(methodName)
+                            .done(function (result) {
+                                $rootScope.$apply(function () {
+                                    if (callback)
+                                        callback(result);
+                                });
+                            });
+
+                        return this;
+                    }
+                }
+            };
+
+            return SignalRProxyFactory;
+        }]);
+
+})(window.App = window.App || {});

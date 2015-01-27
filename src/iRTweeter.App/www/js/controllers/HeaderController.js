@@ -1,27 +1,30 @@
 ﻿(function () {
 
     angular.module(App.moduleName)
-        .controller('HeaderController', ['$scope', 'AuthenticationService', 'AppService', function ($scope, auth, appSvc) {
+        .controller('HeaderController', ['$scope', 'SignalRProxy', 'AuthenticationService', function ($scope, SignalRProxy, authSvc) {
 
             $scope.isConnected = false;
 
-            App.connection.done(function () {
-                App.AppServices.server.getAuthenticatedUser().done(function (user) {
-
-                    $scope.$apply(function () {
-
-                        if (user) {
-                            $scope.isConnected = true;
-
-                            $scope.authInfo = {
-                                username: user.ScreenName,
-                                name: user.Name,
-                                url: user.Url,
-                                imageUrl: user.ProfileImageUrl
-                            };
-                        }
-                    });
+            var proxy = new SignalRProxy('authenticationHub', {}, function () {
+                
+                proxy.on('SignOut', function () {
+                    $isConnected = false;
+                    $scope.authInfo = null;
                 });
             });
+
+            authSvc.getUser().then(displayUserInfo);
+
+            function displayUserInfo(user) {
+                if (user) {
+                    $isConnected = true;
+
+                    $scope.authInfo = {
+                        username: user.ScreenName,
+                        imageUrl: user.ProfileImageUrl
+                    };
+                }
+            }
+
         }]);
 })();

@@ -126,7 +126,7 @@
     <Compile Include="Authentication\ExternalTokenData.cs" />
     <Compile Include="Authentication\TwitterAuthProvider.cs" />
     <Compile Include="Config\AppConfiguration.cs" />
-    <Compile Include="Hubs\AppHub.cs" />
+    <Compile Include="Hubs\AuthenticationHub.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -204,7 +204,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="www\js\services\AuthenticationService.js" />
-    <Content Include="www\js\services\AppService.js" />
+    <Content Include="www\js\services\SignalRProxy.js" />
     <Content Include="www\views\about.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -2,32 +2,43 @@
 (function (app) {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', 'AppService', function ($scope, $http, auth, appSvc) {
+        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', function ($scope, $http, auth) {
 
             $scope.saved = false;
 
-            app.connection.done(function () {
-                app.AppServices.server.getAuthenticatedUser().done(function (user) {
+            //app.connection.done(function () {
+            //    app.AppServices.server.getAuthenticatedUser().done(function (user) {
 
-                    $scope.$apply(function () {
-                        $scope.isConnectedToTwitter = user != undefined;
+            //        $scope.$apply(function () {
+            //            $scope.isConnectedToTwitter = user != undefined;
 
-                        if (user) {
-                            $scope.authInfo = {
-                                username: user.ScreenName,
-                                name: user.Name,
-                                url: user.Url,
-                                imageUrl: user.ProfileImageUrl
-                            };
-                        }
-                    });
+            //            if (user) {
+            //                $scope.authInfo = {
+            //                    username: user.ScreenName,
+            //                    name: user.Name,
+            //                    url: user.Url,
+            //                    imageUrl: user.ProfileImageUrl
+            //                };
+            //            }
+            //        });
 
-                });
+            //    });
+            //});
+
+            auth.getUser().then(function (user) {
+
+                $scope.isConnectedToTwitter = user != undefined;
+
+                if (user) {
+                    $scope.authInfo = {
+                        username: user.ScreenName,
+                        name: user.Name,
+                        url: user.Url,
+                        imageUrl: user.ProfileImageUrl
+                    };
+                }
+
             });
-            
-            app.AppServices.client.signOut = function () {
-                console.log("Signed out");
-            };
 
             $http.get('/api/settings')
                 .success(function (result) {
@@ -46,7 +57,13 @@
             };
 
             $scope.signOut = function () {
-                App.AppServices.server.signOut();
+
+                auth.signOut().success(function () {
+                    debugger;
+                    $scope.isConnectedToTwitter = false;
+                    $scope.authInfo = null;
+                });
+
             }
 
             $scope.twitterAuth = function () {
