@@ -1,25 +1,27 @@
 ﻿(function () {
 
     angular.module(App.moduleName)
-        .controller('HeaderController', ['$scope', 'AuthenticationService', function ($scope, auth) {
+        .controller('HeaderController', ['$scope', 'AuthenticationService', 'AppService', function ($scope, auth, appSvc) {
 
             $scope.isConnected = false;
 
-            auth.getUser().then(function (user) {
+            App.connection.done(function () {
+                App.AppServices.server.getAuthenticatedUser().done(function (user) {
 
-                if (user) {
+                    $scope.$apply(function () {
 
-                    $scope.isConnected = true;
+                        if (user) {
+                            $scope.isConnected = true;
 
-                    $scope.authInfo = {
-                        username: user.ScreenName,
-                        name: user.Name,
-                        url: user.Url,
-                        imageUrl: user.ProfileImageUrl
-                    };
-                }
+                            $scope.authInfo = {
+                                username: user.ScreenName,
+                                name: user.Name,
+                                url: user.Url,
+                                imageUrl: user.ProfileImageUrl
+                            };
+                        }
+                    });
+                });
             });
-
         }]);
-
 })();

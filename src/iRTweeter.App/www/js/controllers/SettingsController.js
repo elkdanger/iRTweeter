@@ -1,25 +1,33 @@
 ﻿
-(function () {
+(function (app) {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', function ($scope, $http, auth) {
+        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', 'AppService', function ($scope, $http, auth, appSvc) {
 
             $scope.saved = false;
+
+            app.connection.done(function () {
+                app.AppServices.server.getAuthenticatedUser().done(function (user) {
+
+                    $scope.$apply(function () {
+                        $scope.isConnectedToTwitter = user != undefined;
+
+                        if (user) {
+                            $scope.authInfo = {
+                                username: user.ScreenName,
+                                name: user.Name,
+                                url: user.Url,
+                                imageUrl: user.ProfileImageUrl
+                            };
+                        }
+                    });
+
+                });
+            });
             
-            function setAuthInfo(user) {
-                $scope.isConnectedToTwitter = auth.user != undefined;
-
-                if (auth.user) {
-                    $scope.authInfo = {
-                        username: auth.user.ScreenName,
-                        name: auth.user.Name,
-                        url: auth.user.Url,
-                        imageUrl: auth.user.ProfileImageUrl
-                    };
-                }
-            }
-
-            setAuthInfo(auth.user);
+            app.AppServices.client.signOut = function () {
+                console.log("Signed out");
+            };
 
             $http.get('/api/settings')
                 .success(function (result) {
@@ -37,6 +45,10 @@
                     });
             };
 
+            $scope.signOut = function () {
+                App.AppServices.server.signOut();
+            }
+
             $scope.twitterAuth = function () {
 
                 var redirectUrl = location.protocol + "//" + location.host + "#/settings";
@@ -45,10 +57,6 @@
                 window.location = url;
             };
 
-            $scope.$on("socialConnected", function (user) {
-                setAuthInfo(user);
-            });
-
         }]);
 
-})();
+})(window.App = window.App || {});

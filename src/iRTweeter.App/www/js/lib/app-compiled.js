@@ -2,10 +2,13 @@
 
     app.moduleName = "irtweeter";
 
-    $.get("/api/auth/user")
-        .then(function (data) {
-            console.log(data);
-        });
+    // SignalR hubs
+    app.connection = $.connection.hub.start();
+    app.AppServices = $.connection.appHub;
+
+    app.AppServices.client.signOut = function () {
+        debugger;
+    };
 
     angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
@@ -26,7 +29,6 @@
                 .otherwise({
                     redirectTo: '/'
                 });
-
         }])
         .directive('spinner', function() {
             return {
@@ -54,27 +56,29 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HeaderController', ['$scope', 'AuthenticationService', function ($scope, auth) {
+        .controller('HeaderController', ['$scope', 'AuthenticationService', 'AppService', function ($scope, auth, appSvc) {
 
             $scope.isConnected = false;
 
-            auth.getUser().then(function (user) {
+            App.connection.done(function () {
+                App.AppServices.server.getAuthenticatedUser().done(function (user) {
 
-                if (user) {
+                    $scope.$apply(function () {
 
-                    $scope.isConnected = true;
+                        if (user) {
+                            $scope.isConnected = true;
 
-                    $scope.authInfo = {
-                        username: user.ScreenName,
-                        name: user.Name,
-                        url: user.Url,
-                        imageUrl: user.ProfileImageUrl
-                    };
-                }
+                            $scope.authInfo = {
+                                username: user.ScreenName,
+                                name: user.Name,
+                                url: user.Url,
+                                imageUrl: user.ProfileImageUrl
+                            };
+                        }
+                    });
+                });
             });
-
         }]);
-
 })();
 (function () {
 
@@ -97,24 +101,33 @@ $(function () {
 (function () {
 
     angular.module(App.moduleName)
-        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', function ($scope, $http, auth) {
+        .controller('SettingsController', ['$scope', '$http', 'AuthenticationService', 'AppService', function ($scope, $http, auth, appSvc) {
 
             $scope.saved = false;
-            
-            function setAuthInfo(user) {
-                $scope.isConnectedToTwitter = auth.user != undefined;
 
-                if (auth.user) {
-                    $scope.authInfo = {
-                        username: auth.user.ScreenName,
-                        name: auth.user.Name,
-                        url: auth.user.Url,
-                        imageUrl: auth.user.ProfileImageUrl
-                    };
-                }
-            }
+            App.connection.done(function () {
+                App.AppServices.server.getAuthenticatedUser().done(function (user) {
 
-            setAuthInfo(auth.user);
+                    $scope.$apply(function () {
+                        $scope.isConnectedToTwitter = user != undefined;
+
+                        if (user) {
+                            $scope.authInfo = {
+                                username: user.ScreenName,
+                                name: user.Name,
+                                url: user.Url,
+                                imageUrl: user.ProfileImageUrl
+                            };
+                        }
+                    });
+
+                });
+            });
+
+            App.AppServices.client.signOut = function () {
+                debugger;
+                console.log("Signed out");
+            };
 
             $http.get('/api/settings')
                 .success(function (result) {
@@ -132,6 +145,10 @@ $(function () {
                     });
             };
 
+            $scope.signOut = function () {
+                App.AppServices.server.signOut();
+            }
+
             $scope.twitterAuth = function () {
 
                 var redirectUrl = location.protocol + "//" + location.host + "#/settings";
@@ -140,13 +157,41 @@ $(function () {
                 window.location = url;
             };
 
-            $scope.$on("socialConnected", function (user) {
-                setAuthInfo(user);
-            });
-
         }]);
 
 })();
+
+(function () {
+
+    angular.module(App.moduleName)
+        .service('AppService', ['$rootScope', '$q', function ($rootScope, $q) {
+
+            var proxy = null;
+
+            return {
+                connect: function () {
+
+                    var _this = this;
+
+                    connection = $.hubConnection();
+
+                    this.proxy = connection.createHubProxy('appHub');
+
+                    return connection.start()
+                        .done(function () {
+                            $rootScope.connected = true;
+                            console.log(_this.proxy);
+                        });
+                },
+
+                getAuthenticatedUser: function () {
+                    return this.proxy.invoke('getAuthenticatedUser');
+                }
+            };
+
+        }]);
+
+})(window.App = window.App || {});
 
 (function () {
 
@@ -200,30 +245,4 @@ $(function () {
 
             return new Svc();
         }]);
-})();
-
-(function () {
-
-    angular.module(App.moduleName)
-        .service('SignalRService', function () {
-
-            var proxy = null;
-
-            return {
-                initialise: function () {
-
-                    connection = $.hubConnection();
-
-                    this.proxy = connection.createHubProxy('settingsHub');
-
-                    connection.start()
-                        .done(function () {
-                            console.log("Connected to hub");
-                            $rootScope.connected = true;
-                        });
-                }
-            };
-
-        });
-
 })();

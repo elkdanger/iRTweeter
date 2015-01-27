@@ -204,7 +204,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="www\js\services\AuthenticationService.js" />
-    <Content Include="www\js\services\SignalRService.js" />
+    <Content Include="www\js\services\AppService.js" />
     <Content Include="www\views\about.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -76,6 +76,7 @@ namespace iRTweeter.App.Api
             }
 
             ExternalTokenData.Write(tokenData);
+            AuthenticationHelper.SignIn();
 
             return this.Redirect(redirectUrl);
         }

@@ -2,10 +2,9 @@
 
     app.moduleName = "irtweeter";
 
-    $.get("/api/auth/user")
-        .then(function (data) {
-            console.log(data);
-        });
+    // SignalR hubs
+    app.connection = $.connection.hub.start();
+    app.AppServices = $.connection.appHub;
 
     angular.module(app.moduleName, ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
@@ -26,7 +25,6 @@
                 .otherwise({
                     redirectTo: '/'
                 });
-
         }])
         .directive('spinner', function() {
             return {

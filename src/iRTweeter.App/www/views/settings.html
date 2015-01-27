@@ -13,6 +13,7 @@
 
         <section ng-show="isConnectedToTwitter">
             <p>Connected as {{ authInfo.name }} (@{{ authInfo.username }})</p>
+            <button class="btn btn-danger" ng-click="signOut()">Sign out</button>
         </section>
 
     </div>
