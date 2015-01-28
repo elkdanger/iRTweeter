@@ -175,8 +175,7 @@
   <ItemGroup>
     <Content Include="gulpfile.js" />
     <Content Include="Tasks\bower.js" />
-    <Content Include="Tasks\inject.js" />
-    <Content Include="Tasks\sass.js" />
+    <Content Include="Tasks\css.js" />
     <Content Include="Tasks\scripts.js" />
     <Content Include="Tasks\watch.js" />
     <Content Include="www\css\bootstrap.css">
@@ -206,7 +205,6 @@
     </Content>
     <Content Include="www\js\services\AuthenticationService.js" />
     <Content Include="www\js\services\SignalRProxy.js" />
-    <Content Include="www\js\Test.js" />
     <Content Include="www\views\about.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

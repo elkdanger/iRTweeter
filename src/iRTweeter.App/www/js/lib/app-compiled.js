@@ -202,10 +202,13 @@ $(function () {
                         });
                 },
 
-                signOut: function() {
+                signOut: function () {
+                    var _this = this;
+
                     return $http.put("/api/auth/signOut")
-                        .success(function() {
-                            this.user = null;
+                        .success(function () {
+                            debugger;
+                            _this.user = null;
                         });
                 },
 
