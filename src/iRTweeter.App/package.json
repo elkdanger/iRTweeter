@@ -19,6 +19,7 @@
         "gulp-sass": "^1.3.2",
         "gulp-batch": "^1.0.4",
         "main-bower-files": "^2.5.0",
-        "gulp-inject": "^1.1.1"
+        "gulp-inject": "^1.1.1",
+        "streamqueue": "^0.1.1"
     }
 }
