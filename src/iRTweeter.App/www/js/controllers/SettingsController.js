@@ -26,7 +26,6 @@
             //});
 
             auth.getUser().then(function (user) {
-
                 $scope.isConnectedToTwitter = user != undefined;
 
                 if (user) {
@@ -59,7 +58,6 @@
             $scope.signOut = function () {
 
                 auth.signOut().success(function () {
-                    debugger;
                     $scope.isConnectedToTwitter = false;
                     $scope.authInfo = null;
                 });

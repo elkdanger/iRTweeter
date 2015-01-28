@@ -12,7 +12,9 @@
                 // Dummy event to get things working
                 proxy.on('tmp', function () { });
 
-                connection.start().done(doneCallback);
+                connection.start().done(function () {
+                    $rootScope.$apply(doneCallback);
+                });
 
                 return {
                     connection: connection,

@@ -58,6 +58,8 @@ $(function () {
 
             var proxy = new SignalRProxy('authenticationHub', {}, function () {
                 
+                $scope.isConnected = true;
+
                 proxy.on('SignOut', function () {
                     $isConnected = false;
                     $scope.authInfo = null;
@@ -67,9 +69,8 @@ $(function () {
             authSvc.getUser().then(displayUserInfo);
 
             function displayUserInfo(user) {
+                
                 if (user) {
-                    $isConnected = true;
-
                     $scope.authInfo = {
                         username: user.ScreenName,
                         imageUrl: user.ProfileImageUrl
@@ -124,7 +125,6 @@ $(function () {
             //});
 
             auth.getUser().then(function (user) {
-
                 $scope.isConnectedToTwitter = user != undefined;
 
                 if (user) {
@@ -157,7 +157,6 @@ $(function () {
             $scope.signOut = function () {
 
                 auth.signOut().success(function () {
-                    debugger;
                     $scope.isConnectedToTwitter = false;
                     $scope.authInfo = null;
                 });
@@ -204,7 +203,10 @@ $(function () {
                 },
 
                 signOut: function() {
-                    return $http.put("/api/auth/signOut");
+                    return $http.put("/api/auth/signOut")
+                        .success(function() {
+                            this.user = null;
+                        });
                 },
 
                 getUser: function () {
@@ -245,7 +247,9 @@ $(function () {
                 // Dummy event to get things working
                 proxy.on('tmp', function () { });
 
-                connection.start().done(doneCallback);
+                connection.start().done(function () {
+                    $rootScope.$apply(doneCallback);
+                });
 
                 return {
                     connection: connection,

@@ -7,6 +7,8 @@
 
             var proxy = new SignalRProxy('authenticationHub', {}, function () {
                 
+                $scope.isConnected = true;
+
                 proxy.on('SignOut', function () {
                     $isConnected = false;
                     $scope.authInfo = null;
@@ -16,9 +18,8 @@
             authSvc.getUser().then(displayUserInfo);
 
             function displayUserInfo(user) {
+                
                 if (user) {
-                    $isConnected = true;
-
                     $scope.authInfo = {
                         username: user.ScreenName,
                         imageUrl: user.ProfileImageUrl

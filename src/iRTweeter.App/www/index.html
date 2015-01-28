@@ -50,17 +50,12 @@
                     </ul>
 
                     <p class="navbar-text pull-right">
-
-                        <span ng-show="isConnected">
+                        <span ng-show="authInfo">
                             <img ng-src="{{ authInfo.imageUrl }}" class="navbar-header-image" />
                             Connected as @{{ authInfo.username }}
-
-                            <i class="glyphicon glyphicon-flash" title="App services are connected"></i>
                         </span>
 
-                        <span ng-show="!isConnected">
-                            Not connected to Twitter
-                        </span>
+                        <i class="glyphicon glyphicon-flash" title="App services are connected" ng-show="isConnected"></i>
                     </p>
 
                 </div>

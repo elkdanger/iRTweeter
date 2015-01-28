@@ -26,8 +26,14 @@
                         });
                 },
 
-                signOut: function() {
-                    return $http.put("/api/auth/signOut");
+                signOut: function () {
+                    var _this = this;
+
+                    return $http.put("/api/auth/signOut")
+                        .success(function () {
+                            debugger;
+                            _this.user = null;
+                        });
                 },
 
                 getUser: function () {
