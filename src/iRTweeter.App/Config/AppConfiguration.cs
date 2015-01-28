@@ -13,6 +13,7 @@ namespace iRTweeter.App.Config
 
 #if DEBUG
         private const string configFilename = "config.debug.json";
+        private const string userConfigFilename = "config.user.json";
 #else
         private const string configFilename = "config.json";
 #endif
@@ -71,10 +72,26 @@ namespace iRTweeter.App.Config
         /// <param name="filename">The filename.</param>
         private static IConfig Load()
         {
-            var json = File.ReadAllText(configFilename);
+            var filename = configFilename;
+
+            if (File.Exists(userConfigFilename))
+                filename = userConfigFilename;
+
+            var json = ReadFileContents(filename);
             var config = JsonConvert.DeserializeObject<AppConfiguration>(json);
 
             return config;
+        }
+
+        /// <summary>
+        /// Reads the file contents given the specified filename
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        private static string ReadFileContents(string filename)
+        {
+            var json = File.ReadAllText(filename);
+
+            return json;
         }
 
         /// <summary>
@@ -93,7 +110,7 @@ namespace iRTweeter.App.Config
                         Formatting = Formatting.Indented
                     });
 
-                File.WriteAllText(configFilename, json);
+                File.WriteAllText(userConfigFilename, json);
             });
         }
     }
