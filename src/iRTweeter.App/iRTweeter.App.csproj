@@ -183,6 +183,7 @@
     <Content Include="www\css\bootstrap.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="www\css\spinner.css" />
     <Content Include="www\directives\spinner.html" />
     <Content Include="www\fonts\glyphicons-halflings-regular.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
