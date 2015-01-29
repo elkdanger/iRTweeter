@@ -5,6 +5,8 @@ using System.Net;
 using System.Windows.Forms;
 using iRTweeter.App.Authentication;
 using iRTweeter.App.Config;
+using iRTweeter.App.Services;
+using iRTweeter.Sim;
 using Microsoft.Owin.Hosting;
 using TweetSharp;
 
@@ -33,6 +35,8 @@ namespace iRTweeter.App
             }
 
             AuthenticationHelper.SignIn();
+
+            SimProcessor.Current.Connect();
 
             Application.Run();
         }
