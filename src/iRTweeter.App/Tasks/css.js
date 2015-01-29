@@ -2,18 +2,32 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var inject = require('gulp-inject');
+var watch = require('gulp-watch');
+var sourceMaps = require('gulp-sourcemaps');
 var streamqueue = require('streamqueue');
 
-/**
- * Compiling Css
- */
-gulp.task('compileCss', function () {
+var sassSource = [
+    './www/css/**/*.scss'
+];
 
-    var output = gulp.src([
-        './www/css/**/*.scss'
-    ])
-    .pipe(sass())
-    .pipe(gulp.dest('./www/css'));
+/**
+ * Compiling Sass
+ */
+gulp.task('compileSass', function () {
+
+    return gulp.src(sassSource)
+        .pipe(sourceMaps.init())
+        .pipe(sass())
+        .pipe(sourceMaps.write())
+        .pipe(gulp.dest('./www/css'));
+});
+
+gulp.task('watchSass', function () {
+
+    watch(sassSource, function () {
+        gulp.start('css')
+    });
+
 });
 
 gulp.task('injectCss', function () {

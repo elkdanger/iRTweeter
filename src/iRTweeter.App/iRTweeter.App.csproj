@@ -177,7 +177,9 @@
     <Content Include="Tasks\bower.js" />
     <Content Include="Tasks\css.js" />
     <Content Include="Tasks\scripts.js" />
-    <Content Include="Tasks\watch.js" />
+    <Content Include="www\css\app.css">
+      <DependentUpon>app.scss</DependentUpon>
+    </Content>
     <Content Include="www\css\bootstrap.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
