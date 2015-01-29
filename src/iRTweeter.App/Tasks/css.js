@@ -5,22 +5,22 @@ var inject = require('gulp-inject');
 var watch = require('gulp-watch');
 var sourceMaps = require('gulp-sourcemaps');
 var streamqueue = require('streamqueue');
+var print = require('gulp-print');
 
 var sassSource = [
     './www/css/**/*.scss'
 ];
 
-/**
- * Compiling Sass
- */
-gulp.task('compileSass', function () {
+function compileSassTask() {
 
     return gulp.src(sassSource)
         .pipe(sourceMaps.init())
         .pipe(sass())
         .pipe(sourceMaps.write())
         .pipe(gulp.dest('./www/css'));
-});
+}
+
+gulp.task('compileSass', compileSassTask);
 
 gulp.task('watchSass', function () {
 
@@ -30,18 +30,16 @@ gulp.task('watchSass', function () {
 
 });
 
-gulp.task('injectCss', function () {
+gulp.task('css', function () {
 
     var vendorCss = [
-        './www/css/bootstrap.css'
+        './www/css/bootstrap.css',
+        './www/css/spinner.css'
     ];
 
     var sources = streamqueue({ objectMode: true },
         gulp.src(vendorCss),
-        gulp.src([
-            './www/css/**/*.css',
-            '!./www/css/bootstrap.css'
-        ]));
+        compileSassTask());
 
     return gulp.src('./www/index.html')
         .pipe(inject(sources, { ignorePath: 'www' }))
