@@ -15,12 +15,10 @@
             var simProxy = new SignalRProxy('simHub', {}, function () {
 
                 simProxy.on('simConnected', function (connection) {
-                    debugger;
                     onSimConnected(connection);
                 });
 
                 simProxy.on('simDisconnected', function () {
-                    debugger;
                     $scope.simConnected = false;
                 });
 

@@ -21,6 +21,7 @@
     "gulp-uglify": "^1.1.0",
     "gulp-watch": "^3.0.0",
     "main-bower-files": "^2.5.0",
-    "streamqueue": "^0.1.1"
+    "streamqueue": "^0.1.1",
+    "gulp-newer": "^0.5.0"
   }
 }

@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify');
 var clean = require('gulp-clean');
 var rename = require('gulp-rename');
 var inject = require('gulp-inject');
+var newer = require('gulp-newer');
 
 /**
  * Compiling/minifying scripts
@@ -17,6 +18,7 @@ gulp.task('compileScripts', function () {
     ];
 
     return gulp.src(sources)
+        .pipe(newer('./www/js/lib/app-compiled.js'))
         .pipe(concat('app-compiled.js'))
         .pipe(gulp.dest('./www/js/lib'))
         .pipe(uglify())
