@@ -1,39 +1,42 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using iRacingSdkWrapper;
+using iRTweeter.Sim.EventModel;
 
 namespace iRTweeter.Sim
 {
-    public class SimProcessor
+    public partial class SimProcessor
     {
-        private static object lockObject = new object();
+        private SdkWrapper sdk = new SdkWrapper();
 
-        private static SimProcessor current = null;
-        public static SimProcessor Current
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimProcessor"/> class.
+        /// </summary>
+        private SimProcessor()
         {
-            get
-            {
-                if (current == null)
-                    lock (lockObject)
-                        if (current == null)
-                            current = new SimProcessor();
-                return current;
-            }
+            this.SetupSdk();
         }
 
+        /// <summary>
+        /// Raised when the sim has connected
+        /// </summary>
+        public event EventHandler<SimConnectedEventArgs> Connected;
+
+        /// <summary>
+        /// Raised when the sim has disconnected
+        /// </summary>
+        public event EventHandler Disconnected;
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is connected.
+        /// </summary>
         public bool IsConnected { get; private set; }
 
         /// <summary>
         /// Connects to the sim
         /// </summary>
-        public Task<ISimConnection> Connect()
+        public void Connect()
         {
-            return Task.Run<ISimConnection>(async () =>
-            {
-                await Task.Delay(1000);
-
-                this.IsConnected = true;
-
-                return new SimConnection();
-            });
+            this.sdk.Start();
         }
 
         /// <summary>
@@ -41,7 +44,29 @@ namespace iRTweeter.Sim
         /// </summary>
         public void Disconnect()
         {
-            this.IsConnected = false;
+            this.sdk.Stop();
+        }
+
+        /// <summary>
+        /// Setups the SDK.
+        /// </summary>
+        private void SetupSdk()
+        {
+            this.sdk.Connected += (s, e) =>
+            {
+                this.IsConnected = true;
+
+                if (this.Connected != null)
+                    this.Connected(this, new SimConnectedEventArgs(new SimConnection()));
+            };
+
+            this.sdk.Disconnected += (s, e) =>
+            {
+                this.IsConnected = false;
+
+                if (this.Disconnected != null)
+                    this.Disconnected(this, new EventArgs());
+            };
         }
     }
 }

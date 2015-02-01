@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="iRacingSdkWrapper">
+      <HintPath>..\..\lib\iRacingSdkWrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="iRSDKSharp">
+      <HintPath>..\..\lib\iRSDKSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -37,12 +43,20 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet">
+      <HintPath>..\..\lib\YamlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet.Core">
+      <HintPath>..\..\lib\YamlDotNet.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventModel\SimConnectedEventArgs.cs" />
     <Compile Include="ISimConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimConnection.cs" />
     <Compile Include="SimProcessor.cs" />
+    <Compile Include="SimProcessor.singleton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
