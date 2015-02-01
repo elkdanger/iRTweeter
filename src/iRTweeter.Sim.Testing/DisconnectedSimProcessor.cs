@@ -37,7 +37,7 @@ namespace iRTweeter.Sim.Testing
         {
             Task.Run(async () =>
             {
-                await Task.Delay(10000);
+                await Task.Delay(5000);
 
                 this.CurrentConnection = new SimConnection();
 
