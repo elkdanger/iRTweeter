@@ -1,15 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
-using System.Net;
 using System.Windows.Forms;
 using iRTweeter.App.Authentication;
 using iRTweeter.App.Config;
-using iRTweeter.App.Services;
+using iRTweeter.Contracts;
 using iRTweeter.Sim;
+using iRTweeter.Sim.Testing;
 using iRTweeter.Types;
 using Microsoft.Owin.Hosting;
-using TweetSharp;
 
 namespace iRTweeter.App
 {
@@ -22,13 +22,15 @@ namespace iRTweeter.App
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(params string [] args)
         {
+            CommandLine.Process(args);
+
             BootstrapComponents();
             ConfigureServices();
 
+            // Start web server for configuration/dashboard
             var hostUri = AppConfiguration.Current.Server.GetHostUri();
-
             WebApp.Start<Startup>(hostUri.ToString());
 
             if (AppConfiguration.Current.OpenDashboardOnApplicationStart)
@@ -36,8 +38,10 @@ namespace iRTweeter.App
                 OpenSettings();
             }
 
+            // Sign-in authentication
             AuthenticationHelper.SignIn();
 
+            // Connect to iRacing
             DependencyResolver.Current.GetService<ISimProcessor>().Connect();
 
             Application.Run();
@@ -51,7 +55,8 @@ namespace iRTweeter.App
             var dep = DependencyResolver.Current;
 
             // Add dependencies
-            dep.AddService<ISimProcessor, SimProcessor>();
+            var processorType = CommandLine.DisconnectedMode ? typeof(DisconnectedSimProcessor) : typeof(SimProcessor);
+            dep.AddService<ISimProcessor>(processorType);
         }
 
         /// <summary>

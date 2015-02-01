@@ -1,6 +1,7 @@
 ﻿using System;
 using iRacingSdkWrapper;
-using iRTweeter.Sim.EventModel;
+using iRTweeter.Contracts;
+using iRTweeter.Types.Events;
 
 namespace iRTweeter.Sim
 {

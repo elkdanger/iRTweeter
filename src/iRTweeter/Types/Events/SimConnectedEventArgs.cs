@@ -1,6 +1,7 @@
 ﻿using System;
+using iRTweeter.Contracts;
 
-namespace iRTweeter.Sim.EventModel
+namespace iRTweeter.Types.Events
 {
     public class SimConnectedEventArgs : EventArgs
     {

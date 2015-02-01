@@ -7,6 +7,7 @@ namespace iRTweeter.Types
     {
         T GetService<T>() where T : class;
         void AddService<T>() where T : class, new();
+        void AddService<T>(Type type);
         void AddService<T, U>() where U : class, new();
     }
 
@@ -43,6 +44,14 @@ namespace iRTweeter.Types
             where T: class, new()
         {
             this.container.AddService(typeof(T), Activator.CreateInstance(typeof(T)));
+        }
+
+        /// <summary>
+        /// Adds the service.
+        /// </summary>
+        public void AddService<T>(Type t)
+        {
+            this.container.AddService(typeof(T), Activator.CreateInstance(t));
         }
 
         /// <summary>
