@@ -33,6 +33,11 @@ namespace iRTweeter.Sim
         public bool IsConnected { get; private set; }
 
         /// <summary>
+        /// Gets the current connection.
+        /// </summary>
+        public ISimConnection CurrentConnection { get; private set; }
+
+        /// <summary>
         /// Connects to the sim
         /// </summary>
         public void Connect()
@@ -56,14 +61,16 @@ namespace iRTweeter.Sim
             this.sdk.Connected += (s, e) =>
             {
                 this.IsConnected = true;
+                this.CurrentConnection = new SimConnection();
 
                 if (this.Connected != null)
-                    this.Connected(this, new SimConnectedEventArgs(new SimConnection()));
+                    this.Connected(this, new SimConnectedEventArgs(this.CurrentConnection));
             };
 
             this.sdk.Disconnected += (s, e) =>
             {
                 this.IsConnected = false;
+                this.CurrentConnection = null;
 
                 if (this.Disconnected != null)
                     this.Disconnected(this, new EventArgs());

@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using iRTweeter.App.Authentication;
 using iRTweeter.App.Config;
+using iRTweeter.App.Hubs;
 using iRTweeter.Contracts;
 using iRTweeter.Sim;
 using iRTweeter.Sim.Testing;
 using iRTweeter.Types;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Hosting;
 
 namespace iRTweeter.App
@@ -17,6 +19,7 @@ namespace iRTweeter.App
     {
         private static IContainer components = new System.ComponentModel.Container();
         private static NotifyIcon trayIcon;
+        private static ISimProcessor currentSimProcessor;
 
         /// <summary>
         /// The main entry point for the application.
@@ -41,8 +44,20 @@ namespace iRTweeter.App
             // Sign-in authentication
             AuthenticationHelper.SignIn();
 
-            // Connect to iRacing
-            DependencyResolver.Current.GetService<ISimProcessor>().Connect();
+            // Wait for a connection to iRacing
+            currentSimProcessor = DependencyResolver.Current.GetService<ISimProcessor>();
+
+            currentSimProcessor.Connected += (s, e) =>
+            {
+                SimHub.Context.Value.All.SimConnected(e.Connection);
+            };
+
+            currentSimProcessor.Disconnected += (s, e) =>
+            {
+                SimHub.Context.Value.All.SimDisconnected();
+            };
+
+            currentSimProcessor.Connect();
 
             Application.Run();
         }
@@ -91,6 +106,7 @@ namespace iRTweeter.App
         /// </summary>
         static void ExitApp()
         {
+            currentSimProcessor.Disconnect();
             Application.Exit();
         }
     }

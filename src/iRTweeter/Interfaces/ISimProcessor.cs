@@ -21,6 +21,11 @@ namespace iRTweeter.Contracts
         bool IsConnected { get; }
 
         /// <summary>
+        /// Gets the current connection.
+        /// </summary>
+        ISimConnection CurrentConnection { get; }
+
+        /// <summary>
         /// Connects to the sim
         /// </summary>
         void Connect();

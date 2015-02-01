@@ -55,14 +55,30 @@ $(function () {
         .controller('HeaderController', ['$scope', 'SignalRProxy', 'AuthenticationService', function ($scope, SignalRProxy, authSvc) {
 
             $scope.isConnected = false;
+            $scope.simConnected = false;
 
-            var proxy = new SignalRProxy('authenticationHub', {}, function () {
+            var authProxy = new SignalRProxy('authenticationHub', {}, function () {
                 
                 $scope.isConnected = true;
 
-                proxy.on('SignOut', function () {
+                authProxy.on('SignOut', function () {
                     $isConnected = false;
                     $scope.authInfo = null;
+                });
+            });
+
+            var simProxy = new SignalRProxy('simHub', {}, function () {
+
+                simProxy.on('simConnected', function () {
+                    onSimConnected();
+                });
+
+                simProxy.on('simDisconnected', function () {
+                    $scope.simConnected = false;
+                });
+
+                simProxy.invoke('getSimConnection', function (result) {
+                    onSimConnected(result);
                 });
             });
 
@@ -78,12 +94,17 @@ $(function () {
                 }
             }
 
+            function onSimConnected(connection) {
+                $scope.simConnected = true;
+                $scope.connection = connection;
+            }
+
         }]);
 })();
 (function () {
 
     angular.module(App.moduleName)
-        .controller('HomeController', ['$scope', 'AuthenticationService',  function ($scope, auth) {
+        .controller('HomeController', ['$scope', 'AuthenticationService', 'SignalRProxy',  function ($scope, auth, SignalRProxy) {
 
             $scope.user = null;
             $scope.simConnected = false;
@@ -93,6 +114,33 @@ $(function () {
                     $scope.user = user;
                 }
             });
+
+            var simProxy = new SignalRProxy('simHub', {}, function () {
+
+                simProxy.on('simConnected', function (connection) {
+                    debugger;
+                    onSimConnected(connection);
+                });
+
+                simProxy.on('simDisconnected', function () {
+                    debugger;
+                    $scope.simConnected = false;
+                });
+
+                simProxy.invoke('getSimConnection', function (connection) {
+                    if(connection)
+                        onSimConnected(connection);
+                });
+
+            });
+
+            function onSimConnected(connection) {
+
+                if (!connection) return;
+
+                $scope.simConnected = true;
+                $scope.connection = connection;
+            }
 
         }])
 

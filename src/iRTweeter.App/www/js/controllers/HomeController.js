@@ -1,7 +1,7 @@
 ﻿(function () {
 
     angular.module(App.moduleName)
-        .controller('HomeController', ['$scope', 'AuthenticationService',  function ($scope, auth) {
+        .controller('HomeController', ['$scope', 'AuthenticationService', 'SignalRProxy',  function ($scope, auth, SignalRProxy) {
 
             $scope.user = null;
             $scope.simConnected = false;
@@ -11,6 +11,33 @@
                     $scope.user = user;
                 }
             });
+
+            var simProxy = new SignalRProxy('simHub', {}, function () {
+
+                simProxy.on('simConnected', function (connection) {
+                    debugger;
+                    onSimConnected(connection);
+                });
+
+                simProxy.on('simDisconnected', function () {
+                    debugger;
+                    $scope.simConnected = false;
+                });
+
+                simProxy.invoke('getSimConnection', function (connection) {
+                    if(connection)
+                        onSimConnected(connection);
+                });
+
+            });
+
+            function onSimConnected(connection) {
+
+                if (!connection) return;
+
+                $scope.simConnected = true;
+                $scope.connection = connection;
+            }
 
         }])
 

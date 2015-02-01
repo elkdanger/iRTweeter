@@ -26,16 +26,23 @@ namespace iRTweeter.Sim.Testing
         public bool IsConnected { get; private set; }
 
         /// <summary>
+        /// Gets the current connection.
+        /// </summary>
+        public ISimConnection CurrentConnection { get; private set; }
+
+        /// <summary>
         /// Connects to the sim
         /// </summary>
         public void Connect()
         {
             Task.Run(async () =>
             {
-                await Task.Delay(5000);
+                await Task.Delay(10000);
+
+                this.CurrentConnection = new SimConnection();
 
                 if (this.Connected != null)
-                    this.Connected(this, new SimConnectedEventArgs(new SimConnection()));
+                    this.Connected(this, new SimConnectedEventArgs(this.CurrentConnection));
             });
         }
 
@@ -44,6 +51,8 @@ namespace iRTweeter.Sim.Testing
         /// </summary>
         public void Disconnect()
         {
+            this.CurrentConnection = null;
+
             if (this.Disconnected != null)
                 this.Disconnected(this, new EventArgs());
         }

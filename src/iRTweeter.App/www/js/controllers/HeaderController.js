@@ -4,14 +4,30 @@
         .controller('HeaderController', ['$scope', 'SignalRProxy', 'AuthenticationService', function ($scope, SignalRProxy, authSvc) {
 
             $scope.isConnected = false;
+            $scope.simConnected = false;
 
-            var proxy = new SignalRProxy('authenticationHub', {}, function () {
+            var authProxy = new SignalRProxy('authenticationHub', {}, function () {
                 
                 $scope.isConnected = true;
 
-                proxy.on('SignOut', function () {
+                authProxy.on('SignOut', function () {
                     $isConnected = false;
                     $scope.authInfo = null;
+                });
+            });
+
+            var simProxy = new SignalRProxy('simHub', {}, function () {
+
+                simProxy.on('simConnected', function () {
+                    onSimConnected();
+                });
+
+                simProxy.on('simDisconnected', function () {
+                    $scope.simConnected = false;
+                });
+
+                simProxy.invoke('getSimConnection', function (result) {
+                    onSimConnected(result);
                 });
             });
 
@@ -25,6 +41,11 @@
                         imageUrl: user.ProfileImageUrl
                     };
                 }
+            }
+
+            function onSimConnected(connection) {
+                $scope.simConnected = true;
+                $scope.connection = connection;
             }
 
         }]);
