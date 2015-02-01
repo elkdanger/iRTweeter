@@ -6,7 +6,7 @@
     app.connection = $.connection.hub.start();
     app.AppServices = $.connection.appHub;
 
-    angular.module(app.moduleName, ['ngRoute'])
+    angular.module(app.moduleName, ['ngRoute', 'ngAnimate'])
         .config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider
@@ -107,7 +107,7 @@ $(function () {
         .controller('HomeController', ['$scope', 'AuthenticationService', 'SignalRProxy',  function ($scope, auth, SignalRProxy) {
 
             $scope.user = null;
-            $scope.simConnected = false;
+            $scope.connectionMode = 'idle';
 
             auth.getUser().then(function (user) {
                 if (user) {
@@ -122,21 +122,26 @@ $(function () {
                 });
 
                 simProxy.on('simDisconnected', function () {
-                    $scope.simConnected = false;
+                    $scope.connection = null;
+                    $scope.connectionMode = 'idle';
                 });
 
                 simProxy.invoke('getSimConnection', function (connection) {
-                    if(connection)
-                        onSimConnected(connection);
+                    onSimConnected(connection);
                 });
 
             });
 
             function onSimConnected(connection) {
 
-                if (!connection) return;
+                if (!connection) {
+                    $scope.simConnected = false;
+                    $scope.connection = null;
+                    $scope.connectionMode = 'connecting';
+                    return;
+                }
 
-                $scope.simConnected = true;
+                $scope.connectionMode = 'connected';
                 $scope.connection = connection;
             }
 

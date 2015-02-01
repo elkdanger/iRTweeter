@@ -1,18 +1,26 @@
 ﻿
-<div class="jumbotron">
+<div class="panel-container">
 
-    <h1>Welcome to iRTweeter</h1>
+    <section class="jumbotron jumbotron-home" ng-show="connectionMode == 'connecting'">
 
-    <div ng-show="!user">
-        <p>This is the dashboard for the iRacing Tweet program. Enjoy!</p>
-        <a href="#/settings" class="btn btn-primary btn-lg">Configure</a>
-    </div>
+        <h1>Welcome to iRTweeter</h1>
 
-    <div ng-show="!simConnected && user">
-        <p>Connect your iRacing sim now to start logging Tweets!</p>
+        <div ng-show="!user">
+            <p>This is the dashboard for the iRacing Tweet program. Enjoy!</p>
+            <a href="#/settings" class="btn btn-primary btn-lg">Configure</a>
+        </div>
 
-        <spinner title="Waiting for iRacing.."></spinner>
+        <div ng-show="user">
+            <p>Connect your iRacing sim now to start logging Tweets!</p>
 
-    </div>
+            <spinner title="Waiting for iRacing.."></spinner>
+
+        </div>
+
+    </section>
+
+    <section ng-show="connectionMode == 'connected'">
+        <h4>iRacing is running..</h4>
+    </section>
 
 </div>

@@ -5,9 +5,11 @@ var inject = require('gulp-inject');
 var watch = require('gulp-watch');
 var streamqueue = require('streamqueue');
 var print = require('gulp-print');
+var newer = require('gulp-newer');
 
 var sassSource = [
-    './www/css/**/*.scss'
+    './www/css/**/*.scss',
+    '!./www/css/mixins.*'
 ];
 
 function compileSassTask() {

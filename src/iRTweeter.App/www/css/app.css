@@ -13,3 +13,17 @@
 .navbar .navbar-header-image {
   width: 24px;
   height: 24px; }
+
+.panel-container {
+  position: relative; }
+  .panel-container > section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    -webkit-transition: 0.5s ease all;
+    -moz-transition: 0.5s ease all;
+    -o-transition: 0.5s ease all;
+    transition: 0.5s ease all; }
+    .panel-container > section.ng-hide {
+      opacity: 0; }

@@ -4,7 +4,7 @@
         .controller('HomeController', ['$scope', 'AuthenticationService', 'SignalRProxy',  function ($scope, auth, SignalRProxy) {
 
             $scope.user = null;
-            $scope.simConnected = false;
+            $scope.connectionMode = 'idle';
 
             auth.getUser().then(function (user) {
                 if (user) {
@@ -19,21 +19,26 @@
                 });
 
                 simProxy.on('simDisconnected', function () {
-                    $scope.simConnected = false;
+                    $scope.connection = null;
+                    $scope.connectionMode = 'idle';
                 });
 
                 simProxy.invoke('getSimConnection', function (connection) {
-                    if(connection)
-                        onSimConnected(connection);
+                    onSimConnected(connection);
                 });
 
             });
 
             function onSimConnected(connection) {
 
-                if (!connection) return;
+                if (!connection) {
+                    $scope.simConnected = false;
+                    $scope.connection = null;
+                    $scope.connectionMode = 'connecting';
+                    return;
+                }
 
-                $scope.simConnected = true;
+                $scope.connectionMode = 'connected';
                 $scope.connection = connection;
             }
 

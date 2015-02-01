@@ -1,28 +1,46 @@
-﻿
+﻿@import 'mixins.scss';
+
 /*
     Bootstrap validation classes for angular forms
 */
 .form-control {
 
-	&.ng-touched {
+    &.ng-touched {
 
-		&.ng-invalid {
-			border-color: #a94442;
-			-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-			box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        &.ng-invalid {
+            border-color: #a94442;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 
-			&:focus {
-				border-color: #843534;
-				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483;
-				box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483;
-			}
-		}
-	}
+            &:focus {
+                border-color: #843534;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483;
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #ce8483;
+            }
+        }
+    }
 }
 
 .navbar {
     .navbar-header-image {
         width: 24px;
         height: 24px;
+    }
+}
+
+.panel-container {
+    position: relative;
+
+    > section {
+        position:absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+
+        @include transition(0.5s);
+
+        &.ng-hide {
+            opacity: 0;
+        }
     }
 }

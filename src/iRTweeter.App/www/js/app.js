@@ -6,7 +6,7 @@
     app.connection = $.connection.hub.start();
     app.AppServices = $.connection.appHub;
 
-    angular.module(app.moduleName, ['ngRoute'])
+    angular.module(app.moduleName, ['ngRoute', 'ngAnimate'])
         .config(['$routeProvider', function ($routeProvider) {
 
             $routeProvider
