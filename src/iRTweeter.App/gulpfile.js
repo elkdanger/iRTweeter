@@ -1,4 +1,4 @@
-/// <vs AfterBuild='build' SolutionOpened='watch_sass' />
+/// <vs AfterBuild='build' SolutionOpened='watchSass' />
 var gulp = require('gulp');
 var inject = require('gulp-inject');
 

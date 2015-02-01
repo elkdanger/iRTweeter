@@ -7,6 +7,7 @@ using iRTweeter.App.Authentication;
 using iRTweeter.App.Config;
 using iRTweeter.App.Services;
 using iRTweeter.Sim;
+using iRTweeter.Types;
 using Microsoft.Owin.Hosting;
 using TweetSharp;
 
@@ -24,6 +25,7 @@ namespace iRTweeter.App
         static void Main()
         {
             BootstrapComponents();
+            ConfigureServices();
 
             var hostUri = AppConfiguration.Current.Server.GetHostUri();
 
@@ -36,9 +38,20 @@ namespace iRTweeter.App
 
             AuthenticationHelper.SignIn();
 
-            SimProcessor.Current.Connect();
+            DependencyResolver.Current.GetService<ISimProcessor>().Connect();
 
             Application.Run();
+        }
+
+        /// <summary>
+        /// Configures the services.
+        /// </summary>
+        private static void ConfigureServices()
+        {
+            var dep = DependencyResolver.Current;
+
+            // Add dependencies
+            dep.AddService<ISimProcessor, SimProcessor>();
         }
 
         /// <summary>

@@ -4,14 +4,14 @@ using iRTweeter.Sim.EventModel;
 
 namespace iRTweeter.Sim
 {
-    public partial class SimProcessor
+    public partial class SimProcessor : ISimProcessor
     {
         private SdkWrapper sdk = new SdkWrapper();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimProcessor"/> class.
         /// </summary>
-        private SimProcessor()
+        public SimProcessor()
         {
             this.SetupSdk();
         }

@@ -3,7 +3,6 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var inject = require('gulp-inject');
 var watch = require('gulp-watch');
-var sourceMaps = require('gulp-sourcemaps');
 var streamqueue = require('streamqueue');
 var print = require('gulp-print');
 
@@ -14,9 +13,7 @@ var sassSource = [
 function compileSassTask() {
 
     return gulp.src(sassSource)
-        .pipe(sourceMaps.init())
         .pipe(sass())
-        .pipe(sourceMaps.write())
         .pipe(gulp.dest('./www/css'));
 }
 

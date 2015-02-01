@@ -231,6 +231,10 @@
       <Project>{32920dca-b112-45b8-a38b-db39ed91e7c5}</Project>
       <Name>iRTweeter.Sim</Name>
     </ProjectReference>
+    <ProjectReference Include="..\iRTweeter\iRTweeter.csproj">
+      <Project>{5d901752-ee31-4b65-92b8-121a8cafd397}</Project>
+      <Name>iRTweeter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
