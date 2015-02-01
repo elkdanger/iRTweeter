@@ -10,6 +10,7 @@ gulp.task('scripts', ['compileScripts', 'injectScripts']);
 
 // Primary build task
 gulp.task('build', [
+    'bower',
     'scripts',
     'css',
 ]);
