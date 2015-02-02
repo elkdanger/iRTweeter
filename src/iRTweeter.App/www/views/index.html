@@ -1,6 +1,11 @@
 ﻿
 <div class="panel-container">
 
+    <section class="jumbotron" ng-show="connectionMode == 'disconnected'">
+        <h1>App is disconnected</h1>
+        <p>The application has stopped running or is otherwise unable to connect. Please start the application and refresh the page to continue.</p>
+    </section>
+
     <section class="jumbotron jumbotron-home" ng-show="connectionMode == 'connecting'">
 
         <h1>Welcome to iRTweeter</h1>

@@ -27,6 +27,12 @@
                     onSimConnected(connection);
                 });
 
+                simProxy.connection.disconnected(function () {
+                    $scope.$apply(function () {
+                        $scope.connectionMode = 'disconnected';
+                    });
+                });
+
             });
 
             function onSimConnected(connection) {

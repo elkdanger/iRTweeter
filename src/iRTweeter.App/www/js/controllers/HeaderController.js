@@ -14,6 +14,14 @@
                     $isConnected = false;
                     $scope.authInfo = null;
                 });
+
+                authProxy.connection.disconnected(function () {
+                    $scope.$apply(function () {
+                        debugger;
+                        $scope.isConnected = false;
+                        $scope.simConnected = false;
+                    })
+                });
             });
 
             var simProxy = new SignalRProxy('simHub', {}, function () {
