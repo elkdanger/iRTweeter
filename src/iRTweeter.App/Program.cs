@@ -49,12 +49,12 @@ namespace iRTweeter.App
 
             currentSimProcessor.Connected += (s, e) =>
             {
-                SimHub.Context.Value.All.SimConnected(e.Connection);
+                SimHub.HubContext.Value.All.SimConnected(e.Connection);
             };
 
             currentSimProcessor.Disconnected += (s, e) =>
             {
-                SimHub.Context.Value.All.SimDisconnected();
+                SimHub.HubContext.Value.All.SimDisconnected();
             };
 
             currentSimProcessor.Connect();

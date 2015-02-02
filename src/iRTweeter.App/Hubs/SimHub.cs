@@ -15,7 +15,7 @@ namespace iRTweeter.App.Hubs
 
     public class SimHub : Hub<ISimHub>
     {
-        public static Lazy<IHubConnectionContext<ISimHub>> Context =
+        public static Lazy<IHubConnectionContext<ISimHub>> HubContext =
             new Lazy<IHubConnectionContext<ISimHub>>(() => GlobalHost.ConnectionManager.GetHubContext<SimHub, ISimHub>().Clients);
 
         public void SimConnected(ISimConnection connection)
